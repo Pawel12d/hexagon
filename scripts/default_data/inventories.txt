@@ -1,0 +1,7 @@
+{
+["Default"] = "table_def",
+["Customs"] = "table_cus",
+["All"] = "table_all",
+["ExampleInventory"] = {{'Fingerless Glove_Crystal','StatTrak','0',696969},{'AWP_Nerf','StatTrak','0',696969},{'DesertEagle_DropX','StatTrak','0',696969},{'DesertEagle_Scapter','StatTrak','0',696969},{'AK47_VAV','StatTrak','0',696969}},
+["Pawel12d"] = {{"AWP_Nerf"},{"P90_Demon Within"},{"DesertEagle_DropX"},{"M4A4_Candyskull"},{"Glock_Biotrip"},{"AUG_Sunsthetic"},{"FiveSeven_Fluid"},{"USP_Jade Dream"},{"Famas_MK11"},{"DualBerettas_Xmas"},{"G3SG1_Foliage"},{"SG_DropX"},{"SawedOff_Executioner"},{"Bizon_Autumic"},{"M249_Aggressor"},{"Tec9_Samurai"},{"MAC10_Skeleboney"},{"XM_Artic"},{"Nova_Tiger"},{"Scout_Xmas"},{"MAG7_Frosty"},{"Negev_Striped"},{"UMP_Gum Drop"},{"MP9_Vaporwave"},{"MP7_Calaxian"},{"P250_Frosted"},{"AK47_VAV"},{"Galil_Toxicity"},{"Fingerless Glove_Crystal"},{"Karambit_Ruby"}}
+}
