@@ -1,12 +1,29 @@
-{
-{
+{{
 	weaponname = "Halloween C4",
 	modelname = "C4",
 	model = game.ReplicatedStorage.Viewmodels["v_C4Halloween"]:Clone()
-},
-{
+},{
+	weaponname = "Old M4A1",
+	modelname = "M4A1",
+	model = game.ReplicatedStorage.Viewmodels["v_oldM4A1-S"]:Clone()
+},{
 	weaponname = "Old Butterfly Knife",
 	modelname = "Butterfly Knife",
-	model = game:GetObjects("rbxassetid://6422093888")[1]
-},
-}
+	model = game:GetObjects("rbxassetid://6587879507")[1]["Butterfly Knife"]
+},{
+	weaponname = "Old Karambit",
+	modelname = "Karambit",
+	model = game:GetObjects("rbxassetid://6587879507")[1]["Karambit"]
+},{
+	weaponname = "Old Bayonet",
+	modelname = "Bayonet",
+	model = game:GetObjects("rbxassetid://6587879507")[1]["Bayonet"]
+},{
+	weaponname = "Old Sickle",
+	modelname = "Sickle",
+	model = game:GetObjects("rbxassetid://6587879507")[1]["Sickle"]
+},{
+	weaponname = "Old Flip Knife",
+	modelname = "Flip Knife",
+	model = game:GetObjects("rbxassetid://6587879507")[1]["Flip Knife"]
+}}
