@@ -1,5 +1,5 @@
 {
-["AK47 Weeb"] = {
+{
 	weaponname = "AK47",
 	skinname = "Weeb",
 	skinimage = "http://www.roblox.com/asset/?id=5645176510",
@@ -10,7 +10,7 @@
 		["Bolt"] = "http://www.roblox.com/asset/?id=5645176510"
 	}
 },
-["AK47 Mean Blue"] = {
+{
 	weaponname = "AK47",
 	skinname = "Mean Blue",
 	skinimage = "http://www.roblox.com/asset/?id=6561839300",
@@ -21,7 +21,7 @@
 		["Bolt"] = "http://www.roblox.com/asset/?id=6561812697"
 	}
 },
-["Banana Kielbasa"] = {
+{
 	weaponname = "Banana",
 	skinname = "Kielbasa",
 	skinimage = "http://www.roblox.com/asset/?id=24650385",
@@ -30,7 +30,7 @@
 		["Handle"] = "http://www.roblox.com/asset/?id=661123557"
 	},
 },
-["AWP Retribution"] = {
+{
 	weaponname = "AWP",
 	skinname = "Retribution",
 	skinimage = "http://www.roblox.com/asset/?id=430548989",
@@ -44,10 +44,10 @@
 		["Slide 2"] = "http://www.roblox.com/asset/?id=430548989"
 	}
 },
-["AWP Dragon Lore"] = {
+{
 	weaponname = "AWP",
 	skinname = "Dragon Lore",
-	skinimage = "",
+	skinimage = "http://www.roblox.com/asset/?id=6585549388",
 	skinrarity = "Red",
 	model = {
 		["Handle"] = "http://www.roblox.com/asset/?id=6585549388",
@@ -58,10 +58,10 @@
 		["Slide 2"] = "http://www.roblox.com/asset/?id=6585549388"
 	}
 },
-["AWP Neo-Noir"] = {
+{
 	weaponname = "AWP",
 	skinname = "Neo-Noir",
-	skinimage = "",
+	skinimage = "http://www.roblox.com/asset/?id=6585612923",
 	skinrarity = "Contraband",
 	model = {
 		["Handle"] = "http://www.roblox.com/asset/?id=6585612923",
@@ -72,10 +72,10 @@
 		["Slide 2"] = "http://www.roblox.com/asset/?id=6585612923"
 	}
 },
-["AWP Hyper Beast"] = {
+{
 	weaponname = "AWP",
 	skinname = "Hyper Beast",
-	skinimage = "",
+	skinimage = "http://www.roblox.com/asset/?id=6585630605",
 	skinrarity = "Red",
 	model = {
 		["Handle"] = "http://www.roblox.com/asset/?id=6585630605",
@@ -86,7 +86,7 @@
 		["Slide 2"] = "http://www.roblox.com/asset/?id=6585630605"
 	}
 },
-["UMP Mistic"] = {
+{
 	weaponname = "UMP",
 	skinname = "Mistic",
 	skinimage = "http://www.roblox.com/asset/?id=2667880777",
@@ -104,10 +104,10 @@
 		["Part2"] = "http://www.roblox.com/asset/?id=2667880777"
 	}
 },
-["Old Butterfly Knife Jade Dream"] = {
+{
 	weaponname = "Butterfly Knife",
 	skinname = "Old Jade Dream",
-	skinimage = "",
+	skinimage = "http://www.roblox.com/asset/?id=540109079",
 	skinrarity = "Red",
 	model = {
 		["Blade"] = "http://www.roblox.com/asset/?id=540165364",

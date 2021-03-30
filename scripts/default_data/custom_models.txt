@@ -1,0 +1,12 @@
+{
+{
+	weaponname = "Halloween C4",
+	modelname = "C4",
+	model = game.ReplicatedStorage.Viewmodels["v_C4Halloween"]:Clone()
+},
+{
+	weaponname = "Old Butterfly Knife",
+	modelname = "Butterfly Knife",
+	model = game:GetObjects("rbxassetid://6422093888")[1]
+},
+}
