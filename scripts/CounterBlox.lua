@@ -1,16 +1,9 @@
 --[[
 The Best Counter Blox Script - Hexagon (Kill All, Gun Mods, Bomb Mods, Inventory Changer & More!) Release: March 31st 2021.
 
-Damn you deobfuscated the script
-
-Obfuscation Settings:
-- encrypt all strings
-- uglify
-- custom var name: hexagon
+Made by Pawel12d#0272
 
 ToDo:
-- tp keybind (too lazy)
-- fix backtrack (why tf does it not work wtf)
 - finish aimbot
 - finish clantag
 --]]
