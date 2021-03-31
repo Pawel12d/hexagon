@@ -7,6 +7,18 @@
 	modelname = "M4A1",
 	model = game.ReplicatedStorage.Viewmodels["v_oldM4A1-S"]:Clone()
 },{
+	weaponname = "Old Scout",
+	modelname = "Scout",
+	model = game:GetObjects("rbxassetid://6587879507")[1]["Scout"]
+},{
+	weaponname = "Old AWP",
+	modelname = "AWP",
+	model = game:GetObjects("rbxassetid://6587879507")[1]["AWP"]
+},{
+	weaponname = "Old USP",
+	modelname = "USP",
+	model = game:GetObjects("rbxassetid://6587879507")[1]["USP"]
+},{
 	weaponname = "Old Butterfly Knife",
 	modelname = "Butterfly Knife",
 	model = game:GetObjects("rbxassetid://6587879507")[1]["Butterfly Knife"]

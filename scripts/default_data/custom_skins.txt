@@ -28,19 +28,6 @@
 	},
 },{
 	weaponname = "AWP",
-	skinname = "Retribution",
-	skinimage = "http://www.roblox.com/asset/?id=430548989",
-	skinrarity = "Red",
-	model = {
-		["Handle"] = "http://www.roblox.com/asset/?id=430548989",
-		["Mag"] = "http://www.roblox.com/asset/?id=430548989",
-		["Part"] = "http://www.roblox.com/asset/?id=430548989",
-		["Scope"] = "http://www.roblox.com/asset/?id=430548989",
-		["Slide"] = "http://www.roblox.com/asset/?id=430548989",
-		["Slide 2"] = "http://www.roblox.com/asset/?id=430548989"
-	}
-},{
-	weaponname = "AWP",
 	skinname = "Dragon Lore",
 	skinimage = "http://www.roblox.com/asset/?id=6585549388",
 	skinrarity = "Red",
