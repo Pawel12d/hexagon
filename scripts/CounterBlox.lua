@@ -1392,6 +1392,10 @@ SettingsTabCategoryMain:AddButton("Copy Discord Invite", function()
 	setclipboard("https://discord.gg/47YH2Ay")
 end)
 
+SettingsTabCategoryMain:AddButton("Copy Join Command", function()
+	setclipboard("Roblox.GameLauncher.joinGameInstance("..game.PlaceId..", '"..game.JobId.."')")
+end)
+
 SettingsTabCategoryMain:AddButton("Fix Vote Bug", function()
     LocalPlayer.PlayerGui.GUI.MapVote.Visible = false
 	LocalPlayer.PlayerGui.GUI.Scoreboard.Visible = false
