@@ -52,6 +52,11 @@ if not isfile("hexagon/custom_skins.txt") then
 	writefile("hexagon/custom_skins.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/custom_skins.txt"))
 end
 
+if not isfile("hexagon/custom_models.txt") then
+	print("downloading hexagon custom models file")
+	writefile("hexagon/custom_models.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/custom_models.txt"))
+end
+
 if not isfile("hexagon/inventories.txt") then
 	print("downloading hexagon inventories file")
 	writefile("hexagon/inventories.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/inventories.txt"))
