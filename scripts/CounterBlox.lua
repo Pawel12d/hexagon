@@ -1481,7 +1481,7 @@ end)
 
 local SettingsTabCategoryCredits = SettingsTab:AddCategory("Credits", 2)
 
-SettingsTabCategoryCredits:AddLabel("Script - Pawel12d#0272 and ny#2817")
+SettingsTabCategoryCredits:AddLabel("Script - Pawel12d#0272")
 
 SettingsTabCategoryCredits:AddLabel("ESP - Modified Kiriot ESP")
 
