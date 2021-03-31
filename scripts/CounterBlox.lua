@@ -25,7 +25,7 @@ local getrawmetatable = getrawmetatable or false
 local http_request = http_request or request or (http and http.request) or (syn and syn.request) or false
 local mousemove = mousemove or mousemoverel or mouse_move or false
 local getsenv = getsenv or false
-local listdir = listdir or syn_io_listdir or false
+local listdir = listfiles or listdir or syn_io_listdir or false
 local isfolder = isfolder or false
 
 if (getrawmetatable == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: getrawmetatable.") end
