@@ -64,6 +64,8 @@ end
 
 Hint.Text = "Hexagon | Loading..."
 
+wait(1)
+
 -- Viewmodels fix
 for i,v in pairs(game.ReplicatedStorage.Viewmodels:GetChildren()) do
     if v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart.Transparency ~= 1 then
