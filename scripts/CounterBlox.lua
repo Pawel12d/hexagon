@@ -35,7 +35,7 @@ if (getsenv == false) then return LocalPlayer:Kick("Exploit not supported! Missi
 if (listdir == false) then return LocalPlayer:Kick("Exploit not supported! Missing: listdir.") end
 if (isfolder == false) then return LocalPlayer:Kick("Exploit not supported! Missing: isfolder.") end
 
-Hint.Text = "Hexagon | Setting up configuration settings..."
+Hint.Text = "Hexagon | Loading configuration settings..."
 
 if not isfolder("hexagon") then
 	print("creating hexagon folder")
