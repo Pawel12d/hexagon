@@ -41,6 +41,19 @@
 	}
 },{
 	weaponname = "AWP",
+	skinname = "Mean Green",
+	skinimage = "http://www.roblox.com/asset/?id=6593682454",
+	skinrarity = "Red",
+	model = {
+		["Handle"] = "http://www.roblox.com/asset/?id=6593682454",
+		["Mag"] = "http://www.roblox.com/asset/?id=6593682454",
+		["Part"] = "http://www.roblox.com/asset/?id=6593682454",
+		["Scope"] = "http://www.roblox.com/asset/?id=6593682919",
+		["Slide"] = "http://www.roblox.com/asset/?id=6593682454",
+		["Slide 2"] = "http://www.roblox.com/asset/?id=6593682454"
+	}
+},{
+	weaponname = "AWP",
 	skinname = "Neo-Noir",
 	skinimage = "http://www.roblox.com/asset/?id=6585612923",
 	skinrarity = "Contraband",

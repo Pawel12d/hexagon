@@ -4,8 +4,7 @@ The Best Counter Blox Script - Hexagon (Kill All, Gun Mods, Bomb Mods, Inventory
 Made by Pawel12d#0272
 
 ToDo:
-- finish aimbot
-- finish clantag
+- fix clantag
 --]]
 
 local Hint = Instance.new("Hint", game.CoreGui)
@@ -25,17 +24,17 @@ local getrawmetatable = getrawmetatable or false
 local http_request = http_request or request or (http and http.request) or (syn and syn.request) or false
 local mousemove = mousemove or mousemoverel or mouse_move or false
 local getsenv = getsenv or false
-local listdir = listfiles or listdir or syn_io_listdir or false
+local listdir = listdir or syn_io_listdir or false
 local isfolder = isfolder or false
 
-if (getrawmetatable == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: getrawmetatable.") end
-if (http_request == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: request.") end
-if (mousemove == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: mousemove.") end
-if (getsenv == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: getsenv.") end
-if (listdir == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: listdir.") end
-if (isfolder == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: isfolder.") end
+if (getrawmetatable == false) then return LocalPlayer:Kick("Exploit not supported! Missing: getrawmetatable.") end
+if (http_request == false) then return LocalPlayer:Kick("Exploit not supported! Missing: request.") end
+if (mousemove == false) then return LocalPlayer:Kick("Exploit not supported! Missing: mousemove.") end
+if (getsenv == false) then return LocalPlayer:Kick("Exploit not supported! Missing: getsenv.") end
+if (listdir == false) then return LocalPlayer:Kick("Exploit not supported! Missing: listdir.") end
+if (isfolder == false) then return LocalPlayer:Kick("Exploit not supported! Missing: isfolder.") end
 
-Hint.Text = "Hexagon | Loading configuration settings..."
+Hint.Text = "Hexagon | Setting up configuration settings..."
 
 if not isfolder("hexagon") then
 	print("creating hexagon folder")
@@ -47,14 +46,14 @@ if not isfolder("hexagon/configs") then
 	makefolder("hexagon/configs")
 end
 
+if not isfile("hexagon/autoload.txt") then
+	print("creating hexagon autoload file")
+	writefile("hexagon/autoload.txt", "")
+end
+
 if not isfile("hexagon/custom_skins.txt") then
 	print("downloading hexagon custom skins file")
 	writefile("hexagon/custom_skins.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/custom_skins.txt"))
-end
-
-if not isfile("hexagon/custom_models.txt") then
-	print("downloading hexagon custom models file")
-	writefile("hexagon/custom_models.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/custom_models.txt"))
 end
 
 if not isfile("hexagon/inventories.txt") then
@@ -68,8 +67,6 @@ if not isfile("hexagon/skyboxes.txt") then
 end
 
 Hint.Text = "Hexagon | Loading..."
-
-wait(1)
 
 -- Viewmodels fix
 for i,v in pairs(game.ReplicatedStorage.Viewmodels:GetChildren()) do
@@ -130,8 +127,10 @@ local nocw_s = {}
 local nocw_m = {}
 local curVel = 16
 local isBhopping = false
+
 local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/ESP.lua"))()
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/UILibrary.lua"))()
+
 local Window = library:CreateWindow(Vector2.new(500, 500), Vector2.new((workspace.CurrentCamera.ViewportSize.X/2)-250, (workspace.CurrentCamera.ViewportSize.Y/2)-250))
 
 
@@ -270,7 +269,7 @@ local function GetLegitbotTarget()
 					
 					if FoV < library.pointers.AimbotTabCategoryLegitbotFoV.value or library.pointers.AimbotTabCategoryLegitbotFoV.value == 0 then
 						if math.floor((LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).magnitude) < library.pointers.AimbotTabCategoryLegitbotDistance.value or library.pointers.AimbotTabCategoryLegitbotDistance.value == 0 then
-							--if library.pointers.AimbotTabCategoryLegitbotTargetPriority.value == "FoV" then
+							if library.pointers.AimbotTabCategoryLegitbotTargetPriority.value == "FoV" then
 								local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
 								local FoV = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
 									
@@ -278,7 +277,6 @@ local function GetLegitbotTarget()
 									target = v
 									oldval = FoV
 								end
-							--[[
 							elseif library.pointers.AimbotTabCategoryLegitbotTargetPriority.value == "Distance" then
 								local Distance = math.floor((v.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude)
 								
@@ -286,15 +284,7 @@ local function GetLegitbotTarget()
 									target = v
 									oldval = Distance
 								end
-							elseif library.pointers.AimbotTabCategoryLegitbotTargetPriority.value == "Health" then
-								local Health = v.Character.Humanoid.Health
-									
-								if Health < oldval then
-									target = v
-									oldval = Health
-								end
 							end
-							--]]
 						end
 					end
 				end
@@ -317,7 +307,7 @@ local function GetLegitbotHitbox(plr)
 			targetpart = plr.Character:FindFirstChild(v2)
 			
 			if targetpart ~= nil then
-				--if library.pointers.AimbotTabCategoryLegitbotHitboxPriority.value == "FoV" then
+				if library.pointers.AimbotTabCategoryLegitbotHitboxPriority.value == "FoV" then
 					local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(targetpart.Position)
 					local FoV = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
 					
@@ -325,7 +315,6 @@ local function GetLegitbotHitbox(plr)
 						target = targetpart
 						oldval = FoV
 					end
-				--[[
 				elseif library.pointers.AimbotTabCategoryLegitbotHitboxPriority.value == "Distance" then
 					local Distance = math.floor((targetpart.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude)
 					
@@ -333,15 +322,7 @@ local function GetLegitbotHitbox(plr)
 						target = targetpart
 						oldval = Distance
 					end
-				elseif library.pointers.AimbotTabCategoryLegitbotHitboxPriority.value == "Damage" then
-					for i3,v3 in pairs(Hitboxes) do
-						if table.find(v3, targetpart.Name) and i > oldval then
-							target = targetpart
-							oldval = i
-						end
-					end
 				end
-				--]]
 			end
 		end
 	end
@@ -395,8 +376,6 @@ local function AddCustomSkin(tbl)
 			newvalue2.Value = tbl.skinrarity
 			newvalue2.Parent = newvalue1
 			
-			print("pro", newvalue2)
-
 			newvalue3 = Instance.new("StringValue")
 			newvalue3.Name = tostring(tbl.weaponname.."_"..tbl.skinname)
 			newvalue3.Value = tbl.skinrarity
@@ -442,9 +421,9 @@ AimbotTabCategoryLegitbot:AddKeybind("Keybind", nil, "AimbotTabCategoryLegitbotK
 
 AimbotTabCategoryLegitbot:AddMultiDropdown("Hitbox", {"Head", "Chest", "Arms", "Legs"}, {"Head"}, "AimbotTabCategoryLegitbotHitbox")
 
-AimbotTabCategoryLegitbot:AddDropdown("Hitbox Priority", {"FoV"}, "FoV", "AimbotTabCategoryLegitbotHitboxPriority")
+AimbotTabCategoryLegitbot:AddDropdown("Hitbox Priority", {"FoV", "Distance"}, "FoV", "AimbotTabCategoryLegitbotHitboxPriority")
 
-AimbotTabCategoryLegitbot:AddDropdown("Target Priority", {"FoV"}, "FoV", "AimbotTabCategoryLegitbotTargetPriority")
+AimbotTabCategoryLegitbot:AddDropdown("Target Priority", {"FoV", "Distance"}, "FoV", "AimbotTabCategoryLegitbotTargetPriority")
 
 AimbotTabCategoryLegitbot:AddSlider("Field of View", {0, 360, 0, 1, "°"}, "AimbotTabCategoryLegitbotFoV")
 
@@ -1392,10 +1371,6 @@ SettingsTabCategoryMain:AddButton("Copy Discord Invite", function()
 	setclipboard("https://discord.gg/47YH2Ay")
 end)
 
-SettingsTabCategoryMain:AddButton("Copy Join Command", function()
-	setclipboard("Roblox.GameLauncher.joinGameInstance("..game.PlaceId..", '"..game.JobId.."')")
-end)
-
 SettingsTabCategoryMain:AddButton("Fix Vote Bug", function()
     LocalPlayer.PlayerGui.GUI.MapVote.Visible = false
 	LocalPlayer.PlayerGui.GUI.Scoreboard.Visible = false
@@ -1434,16 +1409,20 @@ SettingsTabCategoryPlayers:AddTextBox("Username", "", "SettingsTabCategoryPlayer
 			wait(0.1)
 			library.pointers.SettingsTabCategoryPlayersAge:Set("Age: "..plr.AccountAge)
 			library.pointers.SettingsTabCategoryPlayersAlive:Set("Alive: "..(IsAlive(plr) and "yes" or "nu"))
+			library.pointers.SettingsTabCategoryPlayersTeam:Set("Team: "..GetTeam(plr).Name)
 		end
 		
 		library.pointers.SettingsTabCategoryPlayersAge:Set("Age: ")
 		library.pointers.SettingsTabCategoryPlayersAlive:Set("Alive: ")
+		library.pointers.SettingsTabCategoryPlayersTeam:Set("Team: ")
 	end
 end)
 
 SettingsTabCategoryPlayers:AddLabel("Age: ", "SettingsTabCategoryPlayersAge")
 
 SettingsTabCategoryPlayers:AddLabel("Alive: ", "SettingsTabCategoryPlayersAlive")
+
+SettingsTabCategoryPlayers:AddLabel("Team: ", "SettingsTabCategoryPlayersTeam")
 
 local SettingsTabCategoryConfigs = SettingsTab:AddCategory("Configs", 2)
 
@@ -1483,9 +1462,17 @@ SettingsTabCategoryConfigs:AddButton("Refresh", function()
 	library.pointers.SettingsTabCategoryConfigsConfig.options = cfgs
 end)
 
+SettingsTabCategoryConfigs:AddButton("Set as default", function()
+	if isfile("hexagon/configs/"..library.pointers.SettingsTabCategoryConfigsConfig.value..".cfg") then
+		writefile("hexagon/autoload.txt", library.pointers.SettingsTabCategoryConfigsConfig.value..".cfg")
+	else
+		writefile("hexagon/autoload.txt", "")
+	end
+end)
+
 local SettingsTabCategoryCredits = SettingsTab:AddCategory("Credits", 2)
 
-SettingsTabCategoryCredits:AddLabel("Script - Pawel12d#0272")
+SettingsTabCategoryCredits:AddLabel("Script - Pawel12d#0272 and ny#2817")
 
 SettingsTabCategoryCredits:AddLabel("ESP - Modified Kiriot ESP")
 
@@ -1529,6 +1516,12 @@ game.Players.LocalPlayer.Status.Kills.Changed:Connect(function(val)
 end)
 
 workspace.CurrentCamera.ChildAdded:Connect(function(new)
+	if library.pointers.MiscellaneousTabCategoryGunModsInfiniteAmmo.value == true then
+		cbClient.ammocount = 999999 -- primary ammo
+		cbClient.primarystored = 999999 -- primary stored
+		cbClient.ammocount2 = 999999 -- secondary ammo
+		cbClient.secondarystored = 999999 -- secondary stored
+	end
 	spawn(function()
 	if new.Name == "Arms" and new:IsA("Model") and library.pointers.VisualsTabCategoryViewmodelColorsEnabled.value == true then
 		for i,v in pairs(new:GetChildren()) do
@@ -1979,10 +1972,10 @@ mt.__namecall = newcclosure(function(self, ...)
 				table.insert(args[2], workspace.Map)
 			end
 			if IsAlive(LocalPlayer) and SilentLegitbot.aiming == true and typeof(SilentLegitbot.target) == "Instance" then
-				local hitchance = math.random(0,100)
+				local hitchance = math.random(0, 100)
 				
 				if hitchance <= library.pointers.AimbotTabCategoryLegitbotHitchance.value then
-					args[1] = Ray.new(LocalPlayer.Character.Head.Position, (SilentLegitbot.target.Position - LocalPlayer.Character.Head.Position).unit * 2048)
+					args[1] = Ray.new(LocalPlayer.Character.Head.Position, (SilentLegitbot.target.Position - LocalPlayer.Character.Head.Position).unit * (game.ReplicatedStorage.Weapons[game.Players.LocalPlayer.Character.EquippedTool.Value].Range.Value * 0.1))
 				end
 			end
 		elseif method == "SetPrimaryPartCFrame" and self.Name == "Arms" and library.pointers.VisualsTabCategoryViewmodelEnabled.value == true then
@@ -2008,7 +2001,7 @@ end)
 getrawmetatable(game.Players.LocalPlayer.PlayerGui.Client).__index = newcclosure(function(...)
 	local args = {...}
 	
-	if not checkcaller() then
+	--if not checkcaller() then
 		if args[2] == "Value" then
 			if args[1].Name == "Auto" and library.pointers.MiscellaneousTabCategoryGunModsFullAuto.value == true then
 				return true
@@ -2026,11 +2019,11 @@ getrawmetatable(game.Players.LocalPlayer.PlayerGui.Client).__index = newcclosure
 				return 100
 			elseif (args[1].Name == "Spread" or args[1].Parent.Name == "Spread") and library.pointers.MiscellaneousTabCategoryGunModsNoSpread.value == true then
 				return 0
-			elseif (args[1].Name == "Ammo" or args[1].Name == "StoredAmmo") and library.pointers.MiscellaneousTabCategoryGunModsInfiniteAmmo.value == true then
-				return 999999
+			--elseif (args[1].Name == "Ammo" or args[1].Name == "StoredAmmo") and library.pointers.MiscellaneousTabCategoryGunModsInfiniteAmmo.value == true then
+			--	return 999999
 			end
 		end
-	end
+	--end
 
     return oldIndex(...)
 end)
@@ -2059,6 +2052,18 @@ for i,v in pairs({"CT", "T"}) do
 			end
 		end
 	end)
+end
+
+if readfile("hexagon/autoload.txt") ~= "" and isfile("hexagon/configs/"..readfile("hexagon/autoload.txt")) then
+	local a,b = pcall(function()
+		cfg = loadstring("return "..readfile("hexagon/configs/"..readfile("hexagon/autoload.txt")))()
+	end)
+	
+	if a == false then
+		warn("Config Loading Error", a, b)
+	elseif a == true then
+		library:LoadConfiguration(cfg)
+	end
 end
 
 print("Hexagon finished loading!")

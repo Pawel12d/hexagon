@@ -18,7 +18,7 @@ local ESP = {
 	BoxSize = Vector3.new(4, 6, 0),
     Color = Color3.fromRGB(255, 255, 255),
     TargetPlayers = true,
-    FaceCamera = true,
+    FaceCamera = true, -- i changed last time
     Thickness = 1,
     AttachShift = 1,
     Objects = setmetatable({}, {__mode="kv"}),

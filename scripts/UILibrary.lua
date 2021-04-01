@@ -156,9 +156,9 @@ local library = {
     pointers = {},
     settings = {
         guiname = "Hexagon",
-		title = "Hexagon v2.4",
+		title = "Hexagon",
 		logo = "rbxassetid://4350178803",
-        footer = "bobux mannnnnnnnn", -- "UId: 1770943654 | 18:48:21 | FPS: 60 | https://hexhub.xyz",
+        footer = " Version 2.4",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,
@@ -168,11 +168,11 @@ local library = {
         buttons = Color3.fromRGB(20, 200, 20), -- toggle, sliders colors
         text = Color3.fromRGB(235, 235, 235),
         textboxtext = Color3.fromRGB(145, 145, 145),
-        main = Color3.fromRGB(30, 30, 30), -- (30, 30, 30)
-        outline = Color3.fromRGB(60, 60, 60), -- (10, 10, 10)
-        tabholder = Color3.fromRGB(35, 35, 35), -- (60, 60, 60)
-        tabbutton = Color3.fromRGB(30, 30, 30), -- (40, 40, 40)
-        tabselected = Color3.fromRGB(50, 50, 50) -- (50, 50, 50)
+        main = Color3.fromRGB(30, 30, 30),
+        outline = Color3.fromRGB(60, 60, 60),
+        tabholder = Color3.fromRGB(35, 35, 35),
+        tabbutton = Color3.fromRGB(30, 30, 30),
+        tabselected = Color3.fromRGB(50, 50, 50)
     }
 }
 
@@ -182,10 +182,6 @@ function library:create(class, properties)
 		inst[property] = value
 	end
 	return inst
-end
-
-function library:ToggleGui()
-	library.base.Window.Visible = not library.base.Window.Visible
 end
 
 function library:Notify(title, message, time, buttons, _function)
@@ -375,7 +371,7 @@ function library:SaveConfiguration()
 	end
 	
     for i,v in pairs(library.pointers) do
-		if i ~= "SettingsTabCategoryConfigsConfig" then
+		if not table.find({"SettingsTabCategoryPlayersUsername", "SettingsTabCategoryConfigsConfig", "SettingsTabCategoryConfigsName"}, i) then
 			tbl[i] = v.value
 		end
 	end
@@ -1947,7 +1943,7 @@ function library:CreateWindow(csize, cpos)
 
 	return window
 end
-
+--[[
 game:GetService("UserInputService").InputChanged:connect(function(input)
 	pcall(function()
 	local MousePosition = UserInputService:GetMouseLocation()
@@ -1962,7 +1958,7 @@ game:GetService("UserInputService").InputChanged:connect(function(input)
 	end
 	end)
 end)
-
+--]]
 local function GetConfigs()
 	cfgs = {}
 	for i,v in pairs(syn_io_listdir("hexhub")) do
