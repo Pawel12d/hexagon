@@ -97,6 +97,8 @@ local HexagonFolder = Instance.new("Folder", workspace)
 HexagonFolder.Name = "HexagonFolder"
 
 local oldOsPlatform = game.Players.LocalPlayer.OsPlatform
+local oldMusicT = game.Players.LocalPlayer.PlayerGui.Music.ValveT:Clone()
+local oldMusicCT = game.Players.LocalPlayer.PlayerGui.Music.ValveCT:Clone()
 
 local Weapons = {}; for i,v in pairs(game.ReplicatedStorage.Weapons:GetChildren()) do if v:FindFirstChild("Model") then table.insert(Weapons, v.Name) end end
 
@@ -669,6 +671,42 @@ VisualsTabCategoryOthers:AddDropdown("Skybox", TableToNames(Skyboxes), "Default"
 		for i,v in pairs(rawget(Skyboxes, val)) do
 			NewSkybox[i] = v
 		end
+	end
+end)
+
+VisualsTabCategoryOthers:AddToggle("Force Crosshair", false, "VisualsTabCategoryOthersForceCrosshair")
+
+VisualsTabCategoryOthers:AddToggle("Old Music", false, "VisualsTabCategoryOthersOldMusic", function(val)
+	if val == true then
+		-- T
+		LocalPlayer.PlayerGui.Music.ValveT.Lose.SoundId = "rbxassetid://168869486"
+		LocalPlayer.PlayerGui.Music.ValveT.Win.SoundId = "rbxassetid://203383389"
+		LocalPlayer.PlayerGui.Music.ValveT.StartRound["1"].SoundId = "rbxassetid://203383443"
+		StartRound2 = LocalPlayer.PlayerGui.Music.ValveT.StartRound["1"]:Clone() StartRound2.Name = "2" StartRound2.SoundId = "rbxassetid://329924698" StartRound2.Parent = LocalPlayer.PlayerGui.Music.ValveT.StartRound
+		StartRound3 = LocalPlayer.PlayerGui.Music.ValveT.StartRound["1"]:Clone() StartRound3.Name = "3" StartRound3.SoundId = "rbxassetid://329924746" StartRound3.Parent = LocalPlayer.PlayerGui.Music.ValveT.StartRound
+		StartRound4 = LocalPlayer.PlayerGui.Music.ValveT.StartRound["1"]:Clone() StartRound4.Name = "4" StartRound4.SoundId = "rbxassetid://329924808" StartRound4.Parent = LocalPlayer.PlayerGui.Music.ValveT.StartRound
+		LocalPlayer.PlayerGui.Music.ValveT.StartAction["1"].SoundId = "rbxassetid://203383519"
+		StartAction2 = LocalPlayer.PlayerGui.Music.ValveT.StartAction["1"]:Clone() StartAction2.Name = "2" StartAction2.SoundId = "rbxassetid://329924647" StartAction2.Parent = LocalPlayer.PlayerGui.Music.ValveT.StartAction
+		LocalPlayer.PlayerGui.Music.ValveT["10"].SoundId = "rbxassetid://340817948"
+		LocalPlayer.PlayerGui.Music.ValveT["10"].Volume = 0.4
+		LocalPlayer.PlayerGui.Music.ValveT.Bomb.SoundId = "rbxassetid://340817926"
+		-- CT
+		LocalPlayer.PlayerGui.Music.ValveCT.Lose.SoundId = "rbxassetid://168869486"
+		LocalPlayer.PlayerGui.Music.ValveCT.Win.SoundId = "rbxassetid://203383389"
+		LocalPlayer.PlayerGui.Music.ValveCT.StartRound["1"].SoundId = "rbxassetid://203383443"
+		StartRound2 = LocalPlayer.PlayerGui.Music.ValveCT.StartRound["1"]:Clone() StartRound2.Name = "2" StartRound2.SoundId = "rbxassetid://329924698" StartRound2.Parent = LocalPlayer.PlayerGui.Music.ValveCT.StartRound
+		StartRound3 = LocalPlayer.PlayerGui.Music.ValveCT.StartRound["1"]:Clone() StartRound3.Name = "3" StartRound3.SoundId = "rbxassetid://329924746" StartRound3.Parent = LocalPlayer.PlayerGui.Music.ValveCT.StartRound
+		StartRound4 = LocalPlayer.PlayerGui.Music.ValveCT.StartRound["1"]:Clone() StartRound4.Name = "4" StartRound4.SoundId = "rbxassetid://329924808" StartRound4.Parent = LocalPlayer.PlayerGui.Music.ValveCT.StartRound
+		LocalPlayer.PlayerGui.Music.ValveCT.StartAction["1"].SoundId = "rbxassetid://203383519"
+		StartAction2 = LocalPlayer.PlayerGui.Music.ValveCT.StartAction["1"]:Clone() StartAction2.Name = "2" StartAction2.SoundId = "rbxassetid://329924647" StartAction2.Parent = LocalPlayer.PlayerGui.Music.ValveCT.StartAction
+		LocalPlayer.PlayerGui.Music.ValveCT["10"].SoundId = "rbxassetid://340817891"
+		LocalPlayer.PlayerGui.Music.ValveCT["10"].Volume = 0.4
+		LocalPlayer.PlayerGui.Music.ValveCT.Bomb.SoundId = "rbxassetid://340817834"
+	elseif val == false then
+		LocalPlayer.PlayerGui.Music.ValveT:Destroy()
+		LocalPlayer.PlayerGui.Music.ValveCT:Destroy()
+		oldMusicT:Clone().Parent = LocalPlayer.PlayerGui.Music
+		oldMusicCT:Clone().Parent = LocalPlayer.PlayerGui.Music
 	end
 end)
 
@@ -1412,8 +1450,8 @@ SettingsTabCategoryPlayers:AddTextBox("Username", "", "SettingsTabCategoryPlayer
 		
 		while game.Players:FindFirstChild(library.pointers.SettingsTabCategoryPlayersUsername.value) do
 			wait(0.1)
-			library.pointers.SettingsTabCategoryPlayersAge:Set("Age: "..plr.AccountAge)
-			library.pointers.SettingsTabCategoryPlayersAlive:Set("Alive: "..(IsAlive(plr) and "yes" or "nu"))
+			library.pointers.SettingsTabCategoryPlayersAge:Set("Age: "..plr.AccountAge.." days")
+			library.pointers.SettingsTabCategoryPlayersAlive:Set("Alive: "..(IsAlive(plr) and "yes" or "no"))
 			library.pointers.SettingsTabCategoryPlayersTeam:Set("Team: "..GetTeam(plr).Name)
 		end
 		
@@ -1992,45 +2030,39 @@ mt.__namecall = newcclosure(function(self, ...)
 end)
 
 getrawmetatable(game.Players.LocalPlayer.PlayerGui.Client).__newindex = newcclosure(function(self, idx, val)
-    local callingscript = getcallingscript()
-
-    if callingscript == LocalPlayer.PlayerGui.Client and self.Parent == LocalPlayer.Character then
-		if idx == "WalkSpeed" and isBhopping == true and val ~= 0 then
+	if not checkcaller() then
+		if self.Name == "Humanoid" and idx == "WalkSpeed" and val ~= 0 and isBhopping == true then 
 			val = curVel
+		elseif self.Name == "Crosshair" and idx == "Visible" and val == false and LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.Visible == false and library.pointers.VisualsTabCategoryOthersForceCrosshair.value == true then
+			val = true
 		end
-    end
-
+	end
+	
     return oldNewIndex(self, idx, val)
 end)
 
-getrawmetatable(game.Players.LocalPlayer.PlayerGui.Client).__index = newcclosure(function(...)
-	local args = {...}
-	
-	--if not checkcaller() then
-		if args[2] == "Value" then
-			if args[1].Name == "Auto" and library.pointers.MiscellaneousTabCategoryGunModsFullAuto.value == true then
-				return true
-			elseif args[1].Name == "FireRate" and library.pointers.MiscellaneousTabCategoryGunModsRapidFire.value == true then
-				return 0.001
-			elseif args[1].Name == "ReloadTime" and library.pointers.MiscellaneousTabCategoryGunModsInstantReload.value == true then
-				return 0.001
-			elseif args[1].Name == "EquipTime" and library.pointers.MiscellaneousTabCategoryGunModsInstantEquip.value == true then
-				return 0.001
-			elseif args[1].Name == "Penetration" and library.pointers.MiscellaneousTabCategoryGunModsInfinitePenetration.value == true then
-				return 200
-			elseif args[1].Name == "Range" and library.pointers.MiscellaneousTabCategoryGunModsInfiniteRange.value == true then
-				return 9999
-			elseif args[1].Name == "RangeModifier" and library.pointers.MiscellaneousTabCategoryGunModsInfiniteRange.value == true then
-				return 100
-			elseif (args[1].Name == "Spread" or args[1].Parent.Name == "Spread") and library.pointers.MiscellaneousTabCategoryGunModsNoSpread.value == true then
-				return 0
-			--elseif (args[1].Name == "Ammo" or args[1].Name == "StoredAmmo") and library.pointers.MiscellaneousTabCategoryGunModsInfiniteAmmo.value == true then
-			--	return 999999
-			end
+getrawmetatable(game.Players.LocalPlayer.PlayerGui.Client).__index = newcclosure(function(self, idx)
+	if idx == "Value" then
+		if self.Name == "Auto" and library.pointers.MiscellaneousTabCategoryGunModsFullAuto.value == true then
+			return true
+		elseif self.Name == "FireRate" and library.pointers.MiscellaneousTabCategoryGunModsRapidFire.value == true then
+			return 0.001
+		elseif self.Name == "ReloadTime" and library.pointers.MiscellaneousTabCategoryGunModsInstantReload.value == true then
+			return 0.001
+		elseif self.Name == "EquipTime" and library.pointers.MiscellaneousTabCategoryGunModsInstantEquip.value == true then
+			return 0.001
+		elseif self.Name == "Penetration" and library.pointers.MiscellaneousTabCategoryGunModsInfinitePenetration.value == true then
+			return 200
+		elseif self.Name == "Range" and library.pointers.MiscellaneousTabCategoryGunModsInfiniteRange.value == true then
+			return 9999
+		elseif self.Name == "RangeModifier" and library.pointers.MiscellaneousTabCategoryGunModsInfiniteRange.value == true then
+			return 100
+		elseif (self.Name == "Spread" or self.Parent.Name == "Spread") and library.pointers.MiscellaneousTabCategoryGunModsNoSpread.value == true then
+			return 0
 		end
-	--end
+	end
 
-    return oldIndex(...)
+    return oldIndex(self, idx)
 end)
 
 CharacterAdded()
