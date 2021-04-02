@@ -24,15 +24,15 @@ local getrawmetatable = getrawmetatable or false
 local http_request = http_request or request or (http and http.request) or (syn and syn.request) or false
 local mousemove = mousemove or mousemoverel or mouse_move or false
 local getsenv = getsenv or false
-local listdir = listdir or syn_io_listdir or false
+local listfiles = listfiles or listdir or syn_io_listdir or false
 local isfolder = isfolder or false
 
-if (getrawmetatable == false) then return LocalPlayer:Kick("Exploit not supported! Missing: getrawmetatable.") end
-if (http_request == false) then return LocalPlayer:Kick("Exploit not supported! Missing: request.") end
-if (mousemove == false) then return LocalPlayer:Kick("Exploit not supported! Missing: mousemove.") end
-if (getsenv == false) then return LocalPlayer:Kick("Exploit not supported! Missing: getsenv.") end
-if (listdir == false) then return LocalPlayer:Kick("Exploit not supported! Missing: listdir.") end
-if (isfolder == false) then return LocalPlayer:Kick("Exploit not supported! Missing: isfolder.") end
+if (getrawmetatable == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: getrawmetatable.") end
+if (http_request == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: request.") end
+if (mousemove == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: mousemove.") end
+if (getsenv == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: getsenv.") end
+if (listfiles == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: listfiles.") end
+if (isfolder == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: isfolder.") end
 
 Hint.Text = "Hexagon | Setting up configuration settings..."
 
@@ -1453,7 +1453,7 @@ end)
 SettingsTabCategoryConfigs:AddButton("Refresh", function()
 	local cfgs = {}
 
-	for i,v in pairs(listdir("hexagon/configs")) do
+	for i,v in pairs(listfiles("hexagon/configs")) do
 		if v:sub(-4) == ".cfg" then
 			table.insert(cfgs, v:sub(17, -5))
 		end
