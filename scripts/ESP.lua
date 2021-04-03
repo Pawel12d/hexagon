@@ -26,8 +26,7 @@ local ESP = {
 }
 
 --Declarations--
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+local LocalPlayer = game.Players.LocalPlayer
 local CurrentCamera = workspace.CurrentCamera
 local WorldToViewportPoint = CurrentCamera.WorldToViewportPoint
 
@@ -78,11 +77,12 @@ end
 
 function ESP:GetPlrFromChar(char)
 	local ov = self.Overrides.GetPlrFromChar
+	
 	if ov then
 		return ov(char)
 	end
 	
-	return Players:GetPlayerFromCharacter(char)
+	return game.Players:GetPlayerFromCharacter(char)
 end
 
 function ESP:Toggle(bool)
@@ -326,7 +326,7 @@ function ESP:Add(obj, options)
         Color = options.Color --[[or self:GetColor(obj)]],
         Size = options.Size or self.BoxSize,
         Object = obj,
-        Player = options.Player or Players:GetPlayerFromCharacter(obj),
+        Player = options.Player or game.Players:GetPlayerFromCharacter(obj),
         PrimaryPart = options.PrimaryPart or obj.ClassName == "Model" and (obj.PrimaryPart or obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChildWhichIsA("BasePart")) or obj:IsA("BasePart") and obj,
         Components = {},
         IsEnabled = options.IsEnabled,
@@ -415,7 +415,7 @@ function ESP:Add(obj, options)
 end
 
 local function CharAdded(char)
-    local p = Players:GetPlayerFromCharacter(char)
+    local p = game.Players:GetPlayerFromCharacter(char)
     if not char:FindFirstChild("HumanoidRootPart") then
         local ev
         ev = char.ChildAdded:Connect(function(c)
@@ -444,9 +444,9 @@ local function PlayerAdded(p)
     end
 end
 
-Players.PlayerAdded:Connect(PlayerAdded)
+game.Players.PlayerAdded:Connect(PlayerAdded)
 
-for i,v in pairs(Players:GetPlayers()) do
+for i,v in pairs(game.Players:GetPlayers()) do
     if v ~= LocalPlayer then
         PlayerAdded(v)
     end

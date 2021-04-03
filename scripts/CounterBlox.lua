@@ -1,12 +1,3 @@
---[[
-The Best Counter Blox Script - Hexagon (Kill All, Gun Mods, Bomb Mods, Inventory Changer & More!) Release: March 31st 2021.
-
-Made by Pawel12d#0272
-
-ToDo:
-- fix clantag
---]]
-
 local Hint = Instance.new("Hint", game.CoreGui)
 Hint.Text = "Hexagon | Waiting for the game to load..."
 
@@ -125,7 +116,8 @@ local Skyboxes = loadstring("return "..readfile("hexagon/skyboxes.txt"))()
 
 
 -- Main
-local SilentLegitbot = {target = nil, aiming = false}
+local SilentLegitbot = {target = nil}
+local SilentRagebot = {target = nil, cooldown = false}
 local LocalPlayer = game.Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local cbClient = getsenv(LocalPlayer.PlayerGui:WaitForChild("Client"))
@@ -166,8 +158,8 @@ local function IsAlive(plr)
 	return false
 end
 
-local function IsVisible(plr)
-	return #workspace.CurrentCamera:GetPartsObscuringTarget({LocalPlayer.Character.Head.Position, plr.Character.Head.Position}, {LocalPlayer.Character, HexagonFolder}) == 0 and true or false
+local function IsVisible(pos, ignoreList)
+	return #workspace.CurrentCamera:GetPartsObscuringTarget({LocalPlayer.Character.Head.Position, pos}, ignoreList) == 0 and true or false
 end
 
 local function GetTeam(plr)
@@ -270,7 +262,7 @@ local function GetLegitbotTarget()
 	for i,v in pairs(game.Players:GetPlayers()) do
 		if IsAlive(v) and v ~= LocalPlayer and not v.Character:FindFirstChild("ForceField") then
 			if library.pointers.AimbotTabCategoryLegitbotTeamCheck.value == false or GetTeam(v) ~= GetTeam(LocalPlayer) then
-				if library.pointers.AimbotTabCategoryLegitbotVisibilityCheck.value == false or IsVisible(v) then
+				if library.pointers.AimbotTabCategoryLegitbotVisibilityCheck.value == false or IsVisible(v.Character.Head.Position, {v.Character, LocalPlayer.Character, HexagonFolder, workspace.CurrentCamera}) == true then
 					local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
 					local FoV = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
 					
@@ -409,6 +401,91 @@ local function AddCustomModel(tbl)
 	end
 end
 
+function SimulateShot(plr, pos)
+	local ignoreList = {
+		workspace.CurrentCamera,
+		workspace.Debris,
+		workspace.Ray_Ignore,
+		workspace.Map:WaitForChild("Clips"),
+		workspace.Map:WaitForChild("SpawnPoints"),
+		LocalPlayer.Character
+	}
+	
+	local gun = cbClient.gun
+	
+	if gun ~= "none" then
+		if gun:FindFirstChild("Penetration") then
+			gunPenetration = gun.Penetration.Value * 0.01
+		end
+		
+		if gun:FindFirstChild("Range") then
+			gunRange = gun.Range.Value
+		end
+		
+		local direction = CFrame.new(workspace.CurrentCamera.CFrame.Position, pos).lookVector.unit * math.clamp(gunRange, 1, 300)
+		local ray = Ray.new(workspace.CurrentCamera.CFrame.Position, direction)
+		local hitPart, hitPos = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList, false, true)
+		local partHit, posHit, normHit
+		
+		local partsPenetrated = 0
+		local limit = 0
+		local materialModifier = 1
+		local damageModifier = 1
+		
+		repeat
+			partHit, posHit, normHit = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList, false, true)
+			
+			if partHit and partHit.Parent then
+				materialModifier = 1
+
+				if partHit.Material == Enum.Material.DiamondPlate then
+					materialModifier = 3
+				end
+				
+				if partHit.Material == Enum.Material.CorrodedMetal or partHit.Material == Enum.Material.Metal or partHit.Material == Enum.Material.Concrete or partHit.Material == Enum.Material.Brick then
+					materialModifier = 2
+				end
+				
+				if partHit.Name == "Grate" or partHit.Material == Enum.Material.Wood or partHit.Material == Enum.Material.WoodPlanks or partHit and partHit.Parent and partHit.Parent:FindFirstChild("Humanoid") then
+					materialModifier = 0.1
+				end
+				
+				if partHit.Transparency == 1 or partHit.CanCollide == false or partHit.Name == "Glass" or partHit.Name == "Cardboard" or not (not partHit:IsDescendantOf(workspace.Ray_Ignore)) or not (not partHit:IsDescendantOf(workspace.Debris)) or partHit and partHit.Parent and partHit.Parent.Name == "Hitboxes" then
+					materialModifier = 0
+				end
+
+				if partHit.Name == "nowallbang" then
+					materialModifier = 100
+				end
+				
+				if partHit:FindFirstChild("materialModifier") then
+					materialModifier = partHit.materialModifier.Value
+				end
+				
+				local fakeHit, fakePos = workspace:FindPartOnRayWithWhitelist(Ray.new(posHit + direction * 1, direction * -2), {partHit}, true)
+				
+				limit = math.min(gunPenetration, limit + ((fakePos - posHit).magnitude * materialModifier))
+				wallbang = partsPenetrated >= 1 and true or false
+				
+				if partHit and partHit:IsDescendantOf(plr.Character) and not partHit.Parent:IsA("Accessory") and (partHit.Transparency < 1 or partHit.Name == "HeadHB") then
+					return partHit, posHit, damageModifier, wallbang
+				end
+				
+				damageModifier = 1 - limit / gunPenetration
+				
+				if materialModifier > 0 then
+					partsPenetrated = partsPenetrated + 1
+				end
+				
+				if partHit and partHit.Parent and partHit.Parent.Name == "Hitboxes" or partHit and partHit.Parent and partHit.Parent.Parent and partHit.Parent.Parent:FindFirstChild("Humanoid2") or partHit and partHit.Parent and partHit.Parent:FindFirstChild("Humanoid2") or partHit and partHit.Parent and partHit.Parent:FindFirstChild("Humanoid") and (1 > partHit.Transparency or partHit.Name == "HeadHB") and partHit.Parent:IsA("Model") then
+					table.insert(ignoreList, partHit.Parent)
+				else
+					table.insert(ignoreList, partHit)
+				end
+			end
+		until partHit == nil or partHit:IsDescendantOf(plr.Character) or limit >= gunPenetration or 0 >= damageModifier or partsPenetrated >= 4
+	end
+end
 
 
 -- GUI
@@ -416,7 +493,45 @@ local AimbotTab = Window:CreateTab("Aimbot")
 
 local AimbotTabCategoryLegitbot = AimbotTab:AddCategory("Legitbot", 1)
 
-AimbotTabCategoryLegitbot:AddToggle("Enabled", false, "AimbotTabCategoryLegitbotEnabled")
+AimbotTabCategoryLegitbot:AddToggle("Enabled", false, "AimbotTabCategoryLegitbotEnabled", function(val)
+	if val == true then
+		LegitbotLoop = game:GetService("RunService").RenderStepped:Connect(function()
+			if library.base.Window.Visible == false and IsAlive(LocalPlayer) then
+				if library.pointers.AimbotTabCategoryLegitbotKeybind.value == nil or (library.pointers.AimbotTabCategoryLegitbotKeybind.value.EnumType == Enum.KeyCode and UserInputService:IsKeyDown(library.pointers.AimbotTabCategoryLegitbotKeybind.value)) or (library.pointers.AimbotTabCategoryLegitbotKeybind.value.EnumType == Enum.UserInputType and UserInputService:IsMouseButtonPressed(library.pointers.AimbotTabCategoryLegitbotKeybind.value)) then
+					plr = GetLegitbotTarget()
+					
+					if plr ~= nil then
+						hitboxpart = GetLegitbotHitbox(plr)
+						
+						if hitboxpart ~= nil then
+							local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(hitboxpart.Position)
+							local PositionX = (Mouse.X-Vector.X)/library.pointers.AimbotTabCategoryLegitbotSmoothness.value + 1
+							local PositionY = (Mouse.Y-Vector.Y)/library.pointers.AimbotTabCategoryLegitbotSmoothness.value + 1
+							
+							if library.pointers.AimbotTabCategoryLegitbotSilent.value == true then
+								SilentLegitbot.target = hitboxpart
+								SilentLegitbot.aiming = true
+							else
+								mousemove(-PositionX, -PositionY)
+								if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end
+							end
+						else
+							if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end
+						end
+					else
+						if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end
+					end
+				else
+					if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end
+				end
+			else
+				if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end
+			end
+		end)
+	elseif val == false and LegitbotLoop then
+		LegitbotLoop:Disconnect()
+	end
+end)
 
 AimbotTabCategoryLegitbot:AddToggle("Silent", false, "AimbotTabCategoryLegitbotSilent")
 
@@ -439,7 +554,46 @@ AimbotTabCategoryLegitbot:AddSlider("Distance", {0, 2048, 0, 1, " studs"}, "Aimb
 AimbotTabCategoryLegitbot:AddSlider("Smoothness", {1, 30, 1, 1, ""}, "AimbotTabCategoryLegitbotSmoothness")
 
 AimbotTabCategoryLegitbot:AddSlider("Hitchance", {0, 100, 100, 1, "%"}, "AimbotTabCategoryLegitbotHitchance")
+--[[
+local AimbotTabCategoryRagebot = AimbotTab:AddCategory("Ragebot", 2)
 
+AimbotTabCategoryRagebot:AddToggle("Enabled", false, "AimbotTabCategoryAimbotTabCategoryRagebotEnabled", function(val)
+	if val == true then
+		RagebotLoop = game:GetService("RunService").RenderStepped:Connect(function()
+			if IsAlive(LocalPlayer) then
+				for i,v in pairs(game.Players:GetPlayers()) do
+					if IsAlive(v) and GetTeam(v) ~= GetTeam(LocalPlayer) then
+						local hitPart, hitPos, hitDamage, isWallbang = SimulateShot(v, v.Character.Head.Position) -- UpperTorso
+						
+						if hitPart and (hitDamage * cbClient.gun.DMG.Value) > 20 then
+							if SilentRagebot.cooldown == false then
+								SilentRagebot.cooldown = true
+								SilentRagebot.target = hitPart
+								wait()
+								cbClient.firebullet()
+								if cbClient.gun then
+									wait(cbClient.gun.FireRate.Value)
+									SilentRagebot.cooldown = false
+								end
+							end
+						end
+					end
+				end
+			end
+		end)
+	elseif val == false and RagebotLoop then
+		RagebotLoop:Disconnect()
+	end
+end)
+
+AimbotTabCategoryRagebot:AddToggle("Silent", false, "AimbotTabCategoryAimbotTabCategoryRagebotSilent")
+
+AimbotTabCategoryRagebot:AddToggle("Team Check", false, "AimbotTabCategoryAimbotTabCategoryRagebotTeamCheck")
+
+AimbotTabCategoryRagebot:AddToggle("Autowall", false, "AimbotTabCategoryAimbotTabCategoryRagebotAutowall")
+
+AimbotTabCategoryRagebot:AddSlider("Minimum Damage", {0, 100, 100, 1, " hp"}, "AimbotTabCategoryRagebotMinimumDamage")
+--]]
 local AimbotTabCategoryAntiAimbot = AimbotTab:AddCategory("Anti Aimbot", 2)
 
 AimbotTabCategoryAntiAimbot:AddToggle("Enabled", false, "AimbotTabCategoryAntiAimbotEnabled", function(val)
@@ -1317,7 +1471,7 @@ local MiscellaneousTabCategoryBacktrack = MiscellaneousTab:AddCategory("Backtrac
 
 MiscellaneousTabCategoryBacktrack:AddToggle("Enabled", false, "MiscellaneousTabCategoryBacktrackEnabled", function(val)
 	if val == true then
-		local Backtracking = RunService.RenderStepped:Connect(function()
+		Backtracking = RunService.RenderStepped:Connect(function()
 			if IsAlive(LocalPlayer) then
 				for i,v in pairs(game.Players:GetPlayers()) do
 					if IsAlive(v) and GetTeam(v) ~= GetTeam(LocalPlayer) then
@@ -1515,7 +1669,7 @@ end)
 
 local SettingsTabCategoryCredits = SettingsTab:AddCategory("Credits", 2)
 
-SettingsTabCategoryCredits:AddLabel("Script - Pawel12d#0272 and ny#2817")
+SettingsTabCategoryCredits:AddLabel("Script - Pawel12d#0272")
 
 SettingsTabCategoryCredits:AddLabel("ESP - Modified Kiriot ESP")
 
@@ -1858,42 +2012,6 @@ UserInputService.InputBegan:Connect(function(key, isFocused)
 	end
 end)
 
-RunService.RenderStepped:Connect(function()
-	if library.pointers.AimbotTabCategoryLegitbotEnabled.value == true and library.base.Window.Visible == false and IsAlive(LocalPlayer) then
-		if library.pointers.AimbotTabCategoryLegitbotKeybind.value ~= nil then
-			if not UserInputService:IsKeyDown(library.pointers.AimbotTabCategoryLegitbotKeybind.value) then
-				return
-			end
-		end
-		
-		plr = GetLegitbotTarget()
-		
-		if plr ~= nil then
-			hitboxpart = GetLegitbotHitbox(plr)
-			
-			if hitboxpart ~= nil then
-				local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(hitboxpart.Position)
-				local PositionX = (Mouse.X-Vector.X)/library.pointers.AimbotTabCategoryLegitbotSmoothness.value + 1
-				local PositionY = (Mouse.Y-Vector.Y)/library.pointers.AimbotTabCategoryLegitbotSmoothness.value + 1
-				
-				if library.pointers.AimbotTabCategoryLegitbotSilent.value == true then
-					SilentLegitbot.target = hitboxpart
-					SilentLegitbot.aiming = true
-				else
-					mousemove(-PositionX, -PositionY)
-					if SilentLegitbot.aiming == true then SilentLegitbot.aiming = false end
-				end
-			else
-				if SilentLegitbot.aiming == true then SilentLegitbot.aiming = false end
-			end
-		else
-			if SilentLegitbot.aiming == true then SilentLegitbot.aiming = false end
-		end
-	else
-		if SilentLegitbot.aiming == true then SilentLegitbot.aiming = false end
-	end
-end)
-
 Hint.Text = "Hexagon | Disabling anticheat..."
 
 LocalPlayer.PlayerScripts:WaitForChild("scapter").Disabled = true
@@ -2014,7 +2132,10 @@ mt.__namecall = newcclosure(function(self, ...)
 			if library.pointers.MiscellaneousTabCategoryGunModsWallbang.value == true then
 				table.insert(args[2], workspace.Map)
 			end
-			if IsAlive(LocalPlayer) and SilentLegitbot.aiming == true and typeof(SilentLegitbot.target) == "Instance" then
+			
+			if IsAlive(LocalPlayer) and SilentRagebot.target ~= nil then
+				args[1] = Ray.new(LocalPlayer.Character.Head.Position, (SilentRagebot.target.Position - LocalPlayer.Character.Head.Position).unit * (game.ReplicatedStorage.Weapons[game.Players.LocalPlayer.Character.EquippedTool.Value].Range.Value * 0.1))
+			elseif IsAlive(LocalPlayer) and SilentLegitbot.target ~= nil then
 				local hitchance = math.random(0, 100)
 				
 				if hitchance <= library.pointers.AimbotTabCategoryLegitbotHitchance.value then
@@ -2059,6 +2180,8 @@ getrawmetatable(game.Players.LocalPlayer.PlayerGui.Client).__index = newcclosure
 			return 100
 		elseif (self.Name == "Spread" or self.Parent.Name == "Spread") and library.pointers.MiscellaneousTabCategoryGunModsNoSpread.value == true then
 			return 0
+		elseif (self.Name == "AccuracyDivisor" or self.Name == "AccuracyOffset") and library.pointers.MiscellaneousTabCategoryGunModsNoSpread.value == true then
+			return 0.001
 		end
 	end
 

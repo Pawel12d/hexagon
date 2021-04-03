@@ -1641,7 +1641,7 @@ function library:CreateWindow(csize, cpos)
 
 				UserInputService.InputBegan:connect(function(input)
 					if bind.binding then
-						if table.find({Enum.KeyCode.Backspace,Enum.KeyCode.Escape}, input.KeyCode) then
+						if table.find({Enum.KeyCode.Backspace, Enum.KeyCode.Escape}, input.KeyCode) then
 							bind:Set(nil)
 							bind.binding = false
 						elseif input.KeyCode and input.KeyCode ~= Enum.KeyCode.Unknown then
