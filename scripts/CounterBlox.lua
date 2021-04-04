@@ -1,3 +1,21 @@
+--[[
+The Best Counter Blox Script - Hexagon (Kill All, Gun Mods, Bomb Mods, Inventory Changer & More!) Release: March 31st 2021.
+
+Made by Pawel12d#0272
+
+ToDo:
+- fix clantag
+
+game.ReplicatedStorage.Skins.Karambit.Ciro.Animated:Destroy()
+
+local cbClient = getsenv(game.Players.LocalPlayer.PlayerGui:WaitForChild("Client"))
+local Firebullet = getprotos(getprotos(getprotos(cbClient.firebullet)[1])[2])[2]
+local FirebulletFull = getprotos(getprotos(cbClient.firebullet)[1])[2]
+writefile("Firebullet.lua", decompile(Firebullet))
+writefile("Firebullet Full.lua", decompile(FirebulletFull))
+print("Done")
+--]]
+
 local Hint = Instance.new("Hint", game.CoreGui)
 Hint.Text = "Hexagon | Waiting for the game to load..."
 
@@ -349,19 +367,19 @@ local function TableToNames(tbl, alt)
 	return otp
 end
 
-local function AddCustomSkin(tbl)
+local function AddCustomSkin(tbl) 
 	if tbl and tbl.weaponname and tbl.skinname and tbl.model then
+		local isGlove = false
+		
+		if table.find({"Strapped Glove", "Handwraps", "Sports Glove", "Fingerless Glove"}, tbl.weaponname) then
+			isGlove = true
+		end
+--(v.Type.Value == "Straps" and "Strapped Glove") or (v.Type.Value == "Wraps" and "Handwraps") or (v.Type.Value == "Sports" and "Sports Glove") or (v.Type.Value == "Fingerless" and "Fingerless Glove")
+						
 		newfolder = Instance.new("Folder")
 		newfolder.Name = tbl.skinname
-		newfolder.Parent = game.ReplicatedStorage.Skins[tbl.weaponname]
-
-		for i,v in pairs(tbl.model) do
-			newvalue = Instance.new("StringValue")
-			newvalue.Name = i
-			newvalue.Value = v
-			newvalue.Parent = newfolder
-		end
-		
+		newfolder.Parent = (isGlove == true and game.ReplicatedStorage.Gloves) or (game.ReplicatedStorage.Skins[tbl.weaponname])
+			
 		if tbl.skinimage ~= nil then
 			newvalue1 = Instance.new("StringValue")
 			newvalue1.Name = tbl.skinname
@@ -373,16 +391,49 @@ local function AddCustomSkin(tbl)
 			newvalue2 = Instance.new("StringValue")
 			newvalue2.Name = "Quality"
 			newvalue2.Value = tbl.skinrarity
-			newvalue2.Parent = newvalue1
+			newvalue2.Parent = (isGlove == false and newvalue1) or nil
 			
 			newvalue3 = Instance.new("StringValue")
 			newvalue3.Name = tostring(tbl.weaponname.."_"..tbl.skinname)
 			newvalue3.Value = tbl.skinrarity
 			newvalue3.Parent = LocalPlayer.PlayerGui.Client.Rarities
 		end
-		
+		--[[
+			if tbl.animation ~= nil then
+				newvalue4 = game.ReplicatedStorage.Skins.Bayonet["Candy Cane"].Animated:Clone()
+				newvalue4.Name = "Animated"
+				require(newvalue4)[1] = nil
+				require(newvalue4)[2] = nil
+				require(newvalue4)[3] = nil
+				require(newvalue4)[4] = nil
+				require(newvalue4)["delays"] = tbl.animation[1]
+				for i,v in pairs(tbl.animation[2]) do
+					require(newvalue4)[i] = v
+				end
+				newvalue4.Parent = newfolder
+			end
+		--]]
+		if isGlove == true then
+			newtextures = Instance.new("SpecialMesh")
+			newtextures.Name = "Textures"
+			newtextures.MeshId = game.ReplicatedStorage.Gloves.Models[tbl.weaponname].RGlove.Mesh.MeshId
+			newtextures.TextureId = tbl.model.Handle
+			newtextures.Parent = newfolder
+			
+			newtype = Instance.new("StringValue")
+			newtype.Name = "Type"
+			newtype.Value = tbl.weaponname
+			newtype.Parent = newfolder
+		else
+			for i,v in pairs(tbl.model) do
+				newvalue = Instance.new("StringValue")
+				newvalue.Name = i
+				newvalue.Value = v
+				newvalue.Parent = newfolder
+			end
+		end
 		table.insert(nocw_s, {tostring(tbl.weaponname.."_"..tbl.skinname)})
-		
+			
 		print("Custom skin: "..tostring(tbl.weaponname.."_"..tbl.skinname).." successfully injected!")
 	end
 end
@@ -392,11 +443,11 @@ local function AddCustomModel(tbl)
 		if game.ReplicatedStorage.Viewmodels:FindFirstChild("v_"..tbl.modelname) then
 			game.ReplicatedStorage.Viewmodels["v_"..tbl.modelname]:Destroy()
 		end
-		
+				
 		newmodel = tbl.model
 		newmodel.Name = "v_"..tbl.modelname
 		newmodel.Parent = game.ReplicatedStorage.Viewmodels
-		
+				
 		table.insert(nocw_m, {tostring(tbl.modelname)})
 	end
 end
@@ -826,6 +877,10 @@ VisualsTabCategoryOthers:AddDropdown("Skybox", TableToNames(Skyboxes), "Default"
 			NewSkybox[i] = v
 		end
 	end
+	
+	pcall(function()
+		library.pointers.VisualsTabCategoryOthersSkybox:Refresh(TableToNames(Skyboxes))
+	end)
 end)
 
 VisualsTabCategoryOthers:AddToggle("Force Crosshair", false, "VisualsTabCategoryOthersForceCrosshair")
@@ -1101,6 +1156,10 @@ MiscellaneousTabCategoryMain:AddMultiDropdown("Custom Models", TableToNames(load
 			AddCustomModel(v)
 		end
 	end
+	
+	pcall(function()
+		library.pointers.MiscellaneousTabCategoryMainCustomModels:Refresh(TableToNames(loadstring("return "..readfile("hexagon/custom_models.txt"))(), true))
+	end)
 end)
 
 MiscellaneousTabCategoryMain:AddDropdown("Inventory Changer", TableToNames(Inventories), "-", "MiscellaneousTabCategoryMainInventoryChanger", function(val)
@@ -1130,11 +1189,7 @@ MiscellaneousTabCategoryMain:AddDropdown("Inventory Changer", TableToNames(Inven
 			
 			for i,v in pairs(game.ReplicatedStorage.Gloves:GetChildren()) do
 				if v:FindFirstChild("Type") then
-					local GloveType = 
-						(v.Type.Value == "Straps" and "Strapped Glove") or
-						(v.Type.Value == "Wraps" and "Handwraps") or
-						(v.Type.Value == "Sports" and "Sports Glove") or
-						(v.Type.Value == "Fingerless" and "Fingerless Glove")
+					local GloveType = (v.Type.Value == "Straps" and "Strapped Glove") or (v.Type.Value == "Wraps" and "Handwraps") or (v.Type.Value == "Sports" and "Sports Glove") or (v.Type.Value == "Fingerless" and "Fingerless Glove")
 						
 					if GloveType then
 						table.insert(AllSkinsTable, {GloveType.."_"..v.Name})
@@ -1266,7 +1321,7 @@ MiscellaneousTabCategoryMain:AddToggle("Inf Stamina", false, "MiscellaneousTabCa
 				cbClient.crouchcooldown = 0
 			end
 		end)
-	elseif val == false  then
+	elseif val == false then
 		game:GetService("RunService"):UnbindFromRenderStep("Stamina")
 	end
 end)
@@ -1341,22 +1396,6 @@ end)
 MiscellaneousTabCategoryMain:AddTextBox("Hit Sound", "", "MiscellaneousTabCategoryMainHitSound")
 
 MiscellaneousTabCategoryMain:AddTextBox("Kill Sound", "", "MiscellaneousTabCategoryMainKillSound")
-
-MiscellaneousTabCategoryMain:AddKeybind("Airstuck", nil, "MiscellaneousTabCategoryMainAirStuck", function(val)
-	if IsAlive(LocalPlayer) and UserInputService:GetFocusedTextBox() == nil then
-		for i,v in pairs(LocalPlayer.Character:GetChildren()) do
-			if v:IsA("BasePart") then
-				v.Anchored = val
-			end
-		end
-	end
-end)
-
-MiscellaneousTabCategoryMain:AddKeybind("Teleport", nil, "MiscellaneousTabCategoryMainTeleport", function(val)
-	if val == true and IsAlive(LocalPlayer) and UserInputService:GetFocusedTextBox() == nil and Mouse.Target ~= nil then
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Mouse.Hit.p + Vector3.new(0, 2.5, 0))
-	end
-end)
 
 local MiscellaneousTabCategoryNoclip = MiscellaneousTab:AddCategory("Noclip", 1)
 
@@ -1532,11 +1571,7 @@ MiscellaneousTabCategoryGrenade:AddDropdown("Type", {"Molotov","HE Grenade","Dec
 local MiscellaneousTabCategoryChatSpam = MiscellaneousTab:AddCategory("Chat Spam", 2)
 
 MiscellaneousTabCategoryChatSpam:AddToggle("Enabled", false, "MiscellaneousTabCategoryChatSpamEnabled", function(val)
-	if val == true then
-		ChatSpam = true
-	elseif val == false then
-		ChatSpam = false
-	end
+	ChatSpam = val
 	
 	while ChatSpam do
 		game:GetService("ReplicatedStorage").Events.PlayerChatted:FireServer(
@@ -1551,6 +1586,41 @@ MiscellaneousTabCategoryChatSpam:AddToggle("Enabled", false, "MiscellaneousTabCa
 end)
 
 MiscellaneousTabCategoryChatSpam:AddTextBox("Message", "Hexagon is the best!", "MiscellaneousTabCategoryChatSpamMessage")
+
+local MiscellaneousTabCategoryKeybinds = MiscellaneousTab:AddCategory("Keybinds", 2)
+
+MiscellaneousTabCategoryKeybinds:AddKeybind("Airstuck", nil, "MiscellaneousTabCategoryKeybindsAirStuck", function(val)
+	if IsAlive(LocalPlayer) and UserInputService:GetFocusedTextBox() == nil then
+		for i,v in pairs(LocalPlayer.Character:GetChildren()) do
+			if v:IsA("BasePart") then
+				v.Anchored = val
+			end
+		end
+	end
+end)
+
+MiscellaneousTabCategoryKeybinds:AddKeybind("Edge Jump", nil, "MiscellaneousTabCategoryKeybindsEdgeJump", function(val)
+	if val == true then
+		if IsAlive(LocalPlayer) and UserInputService:GetFocusedTextBox() == nil and game.Players.LocalPlayer.Character.Humanoid:GetState() == Enum.HumanoidStateType.Running then
+			EdgeJump = true
+			repeat
+				wait()
+				if game.Players.LocalPlayer.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
+					game.Players.LocalPlayer.Character.Humanoid:ChangeState("Jumping")
+				end
+			until not IsAlive(LocalPlayer) or EdgeJump == false or game.Players.LocalPlayer.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall
+			EdgeJump = false
+		end
+	elseif val == false and EdgeJump == true then
+		EdgeJump = false
+	end
+end)
+
+MiscellaneousTabCategoryKeybinds:AddKeybind("Teleport", nil, "MiscellaneousTabCategoryKeybindsTeleport", function(val)
+	if val == true and IsAlive(LocalPlayer) and UserInputService:GetFocusedTextBox() == nil and Mouse.Target ~= nil then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Mouse.Hit.p + Vector3.new(0, 2.5, 0))
+	end
+end)
 
 
 
