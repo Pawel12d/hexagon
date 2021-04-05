@@ -14,7 +14,18 @@ local FirebulletFull = getprotos(getprotos(cbClient.firebullet)[1])[2]
 writefile("Firebullet.lua", decompile(Firebullet))
 writefile("Firebullet Full.lua", decompile(FirebulletFull))
 print("Done")
+
+rbxassetid://6616945516 -- Easter 2021
+rbxassetid://6111454171 -- Christmas 2020
+rbxassetid://5894230059 -- Halloween 2020
+http://www.roblox.com/asset/?id=4540756250 -- Winter 2019
+rbxassetid://2656299034 -- Snowflake
+rbxassetid://2566906953 -- Halloween 2018
+
+game.ReplicatedStorage.EquipPin:FireServer("rbxassetid://2566906953")
 --]]
+
+
 
 local Hint = Instance.new("Hint", game.CoreGui)
 Hint.Text = "Hexagon | Waiting for the game to load..."
@@ -124,7 +135,7 @@ local Sounds = {
 	["Beep"] = workspace.Sounds.Beep
 }
 	
-
+local FOVCircle = Drawing.new("Circle")
 local Cases = {}; for i,v in pairs(game.ReplicatedStorage.Cases:GetChildren()) do table.insert(Cases, v.Name) end
 
 local Configs = {}
@@ -197,14 +208,14 @@ local function CharacterAdded()
 	if IsAlive(LocalPlayer) then
 		LocalPlayer.Character.Humanoid.StateChanged:Connect(function(state)
 			if library.pointers.MiscellaneousTabCategoryBunnyHopEnabled.value == true then
-				if state == Enum.HumanoidStateType.Landed and UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+				if UserInputService:IsKeyDown(Enum.KeyCode.Space) == false then
+					isBhopping = false
+					curVel = library.pointers.MiscellaneousTabCategoryBunnyHopMinVelocity.value
+				elseif state == Enum.HumanoidStateType.Landed and UserInputService:IsKeyDown(Enum.KeyCode.Space) then
 					LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 				elseif state == Enum.HumanoidStateType.Jumping then
 					isBhopping = true
 					curVel = (curVel + library.pointers.MiscellaneousTabCategoryBunnyHopAcceleration.value) >= library.pointers.MiscellaneousTabCategoryBunnyHopMaxVelocity.value and library.pointers.MiscellaneousTabCategoryBunnyHopMaxVelocity.value or curVel + library.pointers.MiscellaneousTabCategoryBunnyHopAcceleration.value
-				elseif UserInputService:IsKeyDown(Enum.KeyCode.Space) == false then
-					isBhopping = false
-					curVel = library.pointers.MiscellaneousTabCategoryBunnyHopMinVelocity.value
 				end
 			end
 		end)
@@ -282,17 +293,17 @@ local function GetLegitbotTarget()
 			if library.pointers.AimbotTabCategoryLegitbotTeamCheck.value == false or GetTeam(v) ~= GetTeam(LocalPlayer) then
 				if library.pointers.AimbotTabCategoryLegitbotVisibilityCheck.value == false or IsVisible(v.Character.Head.Position, {v.Character, LocalPlayer.Character, HexagonFolder, workspace.CurrentCamera}) == true then
 					local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
-					local FoV = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
+					local FOV = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
 					
-					if FoV < library.pointers.AimbotTabCategoryLegitbotFoV.value or library.pointers.AimbotTabCategoryLegitbotFoV.value == 0 then
+					if FOV < library.pointers.AimbotTabCategoryLegitbotFOV.value or library.pointers.AimbotTabCategoryLegitbotFOV.value == 0 then
 						if math.floor((LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).magnitude) < library.pointers.AimbotTabCategoryLegitbotDistance.value or library.pointers.AimbotTabCategoryLegitbotDistance.value == 0 then
-							if library.pointers.AimbotTabCategoryLegitbotTargetPriority.value == "FoV" then
+							if library.pointers.AimbotTabCategoryLegitbotTargetPriority.value == "FOV" then
 								local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
-								local FoV = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
+								local FOV = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
 									
-								if FoV < oldval then
+								if FOV < oldval then
 									target = v
-									oldval = FoV
+									oldval = FOV
 								end
 							elseif library.pointers.AimbotTabCategoryLegitbotTargetPriority.value == "Distance" then
 								local Distance = math.floor((v.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude)
@@ -324,13 +335,13 @@ local function GetLegitbotHitbox(plr)
 			targetpart = plr.Character:FindFirstChild(v2)
 			
 			if targetpart ~= nil then
-				if library.pointers.AimbotTabCategoryLegitbotHitboxPriority.value == "FoV" then
+				if library.pointers.AimbotTabCategoryLegitbotHitboxPriority.value == "FOV" then
 					local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(targetpart.Position)
-					local FoV = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
+					local FOV = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
 					
-					if FoV < oldval then
+					if FOV < oldval then
 						target = targetpart
-						oldval = FoV
+						oldval = FOV
 					end
 				elseif library.pointers.AimbotTabCategoryLegitbotHitboxPriority.value == "Distance" then
 					local Distance = math.floor((targetpart.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude)
@@ -443,11 +454,11 @@ local function AddCustomModel(tbl)
 		if game.ReplicatedStorage.Viewmodels:FindFirstChild("v_"..tbl.modelname) then
 			game.ReplicatedStorage.Viewmodels["v_"..tbl.modelname]:Destroy()
 		end
-				
+		
 		newmodel = tbl.model
 		newmodel.Name = "v_"..tbl.modelname
 		newmodel.Parent = game.ReplicatedStorage.Viewmodels
-				
+		
 		table.insert(nocw_m, {tostring(tbl.modelname)})
 	end
 end
@@ -594,11 +605,13 @@ AimbotTabCategoryLegitbot:AddKeybind("Keybind", nil, "AimbotTabCategoryLegitbotK
 
 AimbotTabCategoryLegitbot:AddMultiDropdown("Hitbox", {"Head", "Chest", "Arms", "Legs"}, {"Head"}, "AimbotTabCategoryLegitbotHitbox")
 
-AimbotTabCategoryLegitbot:AddDropdown("Hitbox Priority", {"FoV", "Distance"}, "FoV", "AimbotTabCategoryLegitbotHitboxPriority")
+AimbotTabCategoryLegitbot:AddDropdown("Hitbox Priority", {"FOV", "Distance"}, "FOV", "AimbotTabCategoryLegitbotHitboxPriority")
 
-AimbotTabCategoryLegitbot:AddDropdown("Target Priority", {"FoV", "Distance"}, "FoV", "AimbotTabCategoryLegitbotTargetPriority")
+AimbotTabCategoryLegitbot:AddDropdown("Target Priority", {"FOV", "Distance"}, "FOV", "AimbotTabCategoryLegitbotTargetPriority")
 
-AimbotTabCategoryLegitbot:AddSlider("Field of View", {0, 360, 0, 1, "°"}, "AimbotTabCategoryLegitbotFoV")
+AimbotTabCategoryLegitbot:AddSlider("Field of View", {0, 360, 0, 1, "°"}, "AimbotTabCategoryLegitbotFOV", function(val)
+	FOVCircle.Radius = val
+end)
 
 AimbotTabCategoryLegitbot:AddSlider("Distance", {0, 2048, 0, 1, " studs"}, "AimbotTabCategoryLegitbotDistance")
 
@@ -927,14 +940,69 @@ VisualsTabCategoryOthers:AddToggle("Bullet Impacts", false, "VisualsTabCategoryO
 
 VisualsTabCategoryOthers:AddColorPicker("Bullet Impacts Color", Color3.new(1,0,0), "VisualsTabCategoryOthersBulletImpactsColor")
 
+local VisualsTabCategoryViewmodelColors = VisualsTab:AddCategory("Viewmodel Colors", 2)
+
+VisualsTabCategoryViewmodelColors:AddToggle("Enabled", false, "VisualsTabCategoryViewmodelColorsEnabled")
+
+VisualsTabCategoryViewmodelColors:AddLabel("")
+VisualsTabCategoryViewmodelColors:AddLabel("Arms")
+VisualsTabCategoryViewmodelColors:AddToggle("Enabled", false, "VisualsTabCategoryViewmodelColorsArms")
+VisualsTabCategoryViewmodelColors:AddColorPicker("Color", Color3.new(1,1,1), "VisualsTabCategoryViewmodelColorsArmsColor")
+VisualsTabCategoryViewmodelColors:AddSlider("Transparency", {0, 1, 0, 0.01, ""}, "VisualsTabCategoryViewmodelColorsArmsTransparency")
+
+VisualsTabCategoryViewmodelColors:AddLabel("")
+VisualsTabCategoryViewmodelColors:AddLabel("Gloves")
+VisualsTabCategoryViewmodelColors:AddToggle("Enabled", false, "VisualsTabCategoryViewmodelColorsGloves")
+VisualsTabCategoryViewmodelColors:AddColorPicker("Color", Color3.new(1,1,1), "VisualsTabCategoryViewmodelColorsGlovesColor")
+VisualsTabCategoryViewmodelColors:AddSlider("Transparency", {0, 1, 0, 0.01, ""}, "VisualsTabCategoryViewmodelColorsGlovesTransparency")
+
+VisualsTabCategoryViewmodelColors:AddLabel("")
+VisualsTabCategoryViewmodelColors:AddLabel("Sleeves")
+VisualsTabCategoryViewmodelColors:AddToggle("Enabled", false, "VisualsTabCategoryViewmodelColorsSleeves")
+VisualsTabCategoryViewmodelColors:AddColorPicker("Color", Color3.new(1,1,1), "VisualsTabCategoryViewmodelColorsSleevesColor")
+VisualsTabCategoryViewmodelColors:AddSlider("Transparency", {0, 1, 0, 0.01, ""}, "VisualsTabCategoryViewmodelColorsSleevesTransparency")
+
+VisualsTabCategoryViewmodelColors:AddLabel("")
+VisualsTabCategoryViewmodelColors:AddLabel("Weapons")
+VisualsTabCategoryViewmodelColors:AddToggle("Enabled", false, "VisualsTabCategoryViewmodelColorsWeapons")
+VisualsTabCategoryViewmodelColors:AddColorPicker("Color", Color3.new(1,1,1), "VisualsTabCategoryViewmodelColorsWeaponsColor")
+VisualsTabCategoryViewmodelColors:AddDropdown("Material", {"SmoothPlastic", "Neon", "ForceField", "Wood", "Glass"}, "SmoothPlastic", "VisualsTabCategoryViewmodelColorsWeaponsMaterial")
+VisualsTabCategoryViewmodelColors:AddSlider("Transparency", {0, 1, 0, 0.01, ""}, "VisualsTabCategoryViewmodelColorsWeaponsTransparency")
+
+local VisualsTabCategoryFOVCircle = VisualsTab:AddCategory("FOV Circle", 2)
+
+VisualsTabCategoryFOVCircle:AddToggle("Enabled", false, "VisualsTabCategoryFOVCircleEnabled", function(val)
+	FOVCircle.Visible = val
+end)
+
+VisualsTabCategoryFOVCircle:AddToggle("Filled", false, "VisualsTabCategoryFOVCircleFilled", function(val)
+	FOVCircle.Filled = val
+end)
+
+VisualsTabCategoryFOVCircle:AddSlider("Thickness", {1, 20, 1, 1, ""}, "VisualsTabCategoryFOVCircleThickness", function(val)
+	FOVCircle.Thickness = val
+end)
+
+VisualsTabCategoryFOVCircle:AddSlider("Transparency", {0, 1, 0, 0.01, ""}, "VisualsTabCategoryFOVCircleTransparency", function(val)
+	FOVCircle.Transparency = 1-val
+end)
+
+VisualsTabCategoryFOVCircle:AddSlider("NumSides", {0, 30, 0, 1, ""}, "VisualsTabCategoryFOVCircleNumSides", function(val)
+	FOVCircle.NumSides = val >= 3 and val or 100
+end)
+
+VisualsTabCategoryFOVCircle:AddColorPicker("Color", Color3.new(1,1,1), "VisualsTabCategoryFOVCircleColor", function(val)
+	FOVCircle.Color = val
+end)
+
 local VisualsTabCategoryViewmodel = VisualsTab:AddCategory("Viewmodel", 2)
 
 VisualsTabCategoryViewmodel:AddToggle("Enabled", false, "VisualsTabCategoryViewmodelEnabled", function(val)
-	cbClient.fieldofview = (val == true and library.pointers.VisualsTabCategoryViewmodelFoV.value or 80)
-	workspace.CurrentCamera.FieldOfView = (val == true and library.pointers.VisualsTabCategoryViewmodelFoV.value or 80)
+	cbClient.fieldofview = (val == true and library.pointers.VisualsTabCategoryViewmodelFOV.value or 80)
+	workspace.CurrentCamera.FieldOfView = (val == true and library.pointers.VisualsTabCategoryViewmodelFOV.value or 80)
 end)
 
-VisualsTabCategoryViewmodel:AddSlider("Field of View", {0, 120, 80, 1, "°"}, "VisualsTabCategoryViewmodelFoV", function(val)
+VisualsTabCategoryViewmodel:AddSlider("Field of View", {0, 120, 80, 1, "°"}, "VisualsTabCategoryViewmodelFOV", function(val)
 	cbClient.fieldofview = (library.pointers.VisualsTabCategoryViewmodelEnabled.value == true and val or 80)
 	workspace.CurrentCamera.FieldOfView = (library.pointers.VisualsTabCategoryViewmodelEnabled.value == true and val or 80)
 end)
@@ -949,7 +1017,7 @@ VisualsTabCategoryViewmodel:AddSlider("Viewmodel Offset Roll", {0, 360, 180, 1, 
 
 VisualsTabCategoryViewmodel:AddButton("Reset", function()
     library.pointers.VisualsTabCategoryViewmodelEnabled:Set(false)
-	library.pointers.VisualsTabCategoryViewmodelFoV:Set(80)
+	library.pointers.VisualsTabCategoryViewmodelFOV:Set(80)
 	library.pointers.VisualsTabCategoryViewmodelOffsetX:Set(180)
 	library.pointers.VisualsTabCategoryViewmodelOffsetY:Set(180)
 	library.pointers.VisualsTabCategoryViewmodelOffsetZ:Set(180)
@@ -985,36 +1053,6 @@ VisualsTabCategoryThirdPerson:AddKeybind("Keybind", nil, "VisualsTabCategoryThir
 end)
 
 VisualsTabCategoryThirdPerson:AddSlider("Distance", {0, 50, 10, 1, ""}, "VisualsTabCategoryThirdPersonDistance")
-
-local VisualsTabCategoryViewmodelColors = VisualsTab:AddCategory("Viewmodel Colors", 2)
-
-VisualsTabCategoryViewmodelColors:AddToggle("Enabled", false, "VisualsTabCategoryViewmodelColorsEnabled")
-
-VisualsTabCategoryViewmodelColors:AddLabel("")
-VisualsTabCategoryViewmodelColors:AddLabel("Arms")
-VisualsTabCategoryViewmodelColors:AddToggle("Enabled", false, "VisualsTabCategoryViewmodelColorsArms")
-VisualsTabCategoryViewmodelColors:AddColorPicker("Color", Color3.new(1,1,1), "VisualsTabCategoryViewmodelColorsArmsColor")
-VisualsTabCategoryViewmodelColors:AddSlider("Transparency", {0, 1, 0, 0.01, ""}, "VisualsTabCategoryViewmodelColorsArmsTransparency")
-
-VisualsTabCategoryViewmodelColors:AddLabel("")
-VisualsTabCategoryViewmodelColors:AddLabel("Gloves")
-VisualsTabCategoryViewmodelColors:AddToggle("Enabled", false, "VisualsTabCategoryViewmodelColorsGloves")
-VisualsTabCategoryViewmodelColors:AddColorPicker("Color", Color3.new(1,1,1), "VisualsTabCategoryViewmodelColorsGlovesColor")
-VisualsTabCategoryViewmodelColors:AddSlider("Transparency", {0, 1, 0, 0.01, ""}, "VisualsTabCategoryViewmodelColorsGlovesTransparency")
-
-VisualsTabCategoryViewmodelColors:AddLabel("")
-VisualsTabCategoryViewmodelColors:AddLabel("Sleeves")
-VisualsTabCategoryViewmodelColors:AddToggle("Enabled", false, "VisualsTabCategoryViewmodelColorsSleeves")
-VisualsTabCategoryViewmodelColors:AddColorPicker("Color", Color3.new(1,1,1), "VisualsTabCategoryViewmodelColorsSleevesColor")
-VisualsTabCategoryViewmodelColors:AddSlider("Transparency", {0, 1, 0, 0.01, ""}, "VisualsTabCategoryViewmodelColorsSleevesTransparency")
-
-VisualsTabCategoryViewmodelColors:AddLabel("")
-VisualsTabCategoryViewmodelColors:AddLabel("Weapons")
-VisualsTabCategoryViewmodelColors:AddToggle("Enabled", false, "VisualsTabCategoryViewmodelColorsWeapons")
-VisualsTabCategoryViewmodelColors:AddColorPicker("Color", Color3.new(1,1,1), "VisualsTabCategoryViewmodelColorsWeaponsColor")
-VisualsTabCategoryViewmodelColors:AddDropdown("Material", {"SmoothPlastic", "Neon", "ForceField", "Wood", "Glass"}, "SmoothPlastic", "VisualsTabCategoryViewmodelColorsWeaponsMaterial")
-VisualsTabCategoryViewmodelColors:AddSlider("Transparency", {0, 1, 0, 0.01, ""}, "VisualsTabCategoryViewmodelColorsWeaponsTransparency")
-
 
 
 local MiscellaneousTab = Window:CreateTab("Miscellaneous")
@@ -1500,6 +1538,8 @@ local MiscellaneousTabCategoryBunnyHop = MiscellaneousTab:AddCategory("Bunny Hop
 
 MiscellaneousTabCategoryBunnyHop:AddToggle("Enabled", false, "MiscellaneousTabCategoryBunnyHopEnabled")
 
+MiscellaneousTabCategoryBunnyHop:AddToggle("Rage", false, "MiscellaneousTabCategoryBunnyHopRage")
+
 MiscellaneousTabCategoryBunnyHop:AddSlider("Acceleration", {0, 100, 3, 1, ""}, "MiscellaneousTabCategoryBunnyHopAcceleration")
 
 MiscellaneousTabCategoryBunnyHop:AddSlider("Minimum Velocity", {0, 100, 16, 1, ""}, "MiscellaneousTabCategoryBunnyHopMinVelocity")
@@ -1636,6 +1676,10 @@ end)
 
 SettingsTabCategoryMain:AddButton("Copy Discord Invite", function()
 	setclipboard("https://discord.gg/47YH2Ay")
+end)
+
+SettingsTabCategoryMain:AddButton("Copy Roblox Game Invite", function()
+	setclipboard("Roblox.GameLauncher.joinGameInstance("..game.PlaceId..", '"..game.JobId.."')")
 end)
 
 SettingsTabCategoryMain:AddButton("Fix Vote Bug", function()
@@ -2082,6 +2126,12 @@ UserInputService.InputBegan:Connect(function(key, isFocused)
 	end
 end)
 
+Mouse.Move:Connect(function()
+	if FOVCircle.Visible then
+		FOVCircle.Position = UserInputService:GetMouseLocation()
+	end
+end)
+
 Hint.Text = "Hexagon | Disabling anticheat..."
 
 LocalPlayer.PlayerScripts:WaitForChild("scapter").Disabled = true
@@ -2222,7 +2272,7 @@ end)
 
 getrawmetatable(game.Players.LocalPlayer.PlayerGui.Client).__newindex = newcclosure(function(self, idx, val)
 	if not checkcaller() then
-		if self.Name == "Humanoid" and idx == "WalkSpeed" and val ~= 0 and isBhopping == true then 
+		if self.Name == "Humanoid" and idx == "WalkSpeed" and val ~= 0 and isBhopping == true and library.pointers.MiscellaneousTabCategoryBunnyHopRage.value == false then 
 			val = curVel
 		elseif self.Name == "Crosshair" and idx == "Visible" and val == false and LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.Visible == false and library.pointers.VisualsTabCategoryOthersForceCrosshair.value == true then
 			val = true
