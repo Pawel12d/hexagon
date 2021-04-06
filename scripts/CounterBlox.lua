@@ -1194,10 +1194,6 @@ MiscellaneousTabCategoryMain:AddMultiDropdown("Custom Models", TableToNames(load
 			AddCustomModel(v)
 		end
 	end
-	
-	pcall(function()
-		library.pointers.MiscellaneousTabCategoryMainCustomModels:Refresh(TableToNames(loadstring("return "..readfile("hexagon/custom_models.txt"))(), true))
-	end)
 end)
 
 MiscellaneousTabCategoryMain:AddDropdown("Inventory Changer", TableToNames(Inventories), "-", "MiscellaneousTabCategoryMainInventoryChanger", function(val)
@@ -1257,7 +1253,14 @@ MiscellaneousTabCategoryMain:AddButton("Inject Custom Skins", function()
 		end
 	end
 end)
-
+--[[
+BAN
+MiscellaneousTabCategoryMain:AddButton("Equip All Skins", function()
+	for i,v in pairs(cbClient.CurrentInventory) do
+		cbClient.equipitem(i, "Both")
+	end
+end)
+--]]
 MiscellaneousTabCategoryMain:AddButton("Crash Server", function()
 	if LocalPlayer.Character then
 		game:GetService("RunService").RenderStepped:Connect(function()
@@ -1538,8 +1541,6 @@ local MiscellaneousTabCategoryBunnyHop = MiscellaneousTab:AddCategory("Bunny Hop
 
 MiscellaneousTabCategoryBunnyHop:AddToggle("Enabled", false, "MiscellaneousTabCategoryBunnyHopEnabled")
 
-MiscellaneousTabCategoryBunnyHop:AddToggle("Rage", false, "MiscellaneousTabCategoryBunnyHopRage")
-
 MiscellaneousTabCategoryBunnyHop:AddSlider("Acceleration", {0, 100, 3, 1, ""}, "MiscellaneousTabCategoryBunnyHopAcceleration")
 
 MiscellaneousTabCategoryBunnyHop:AddSlider("Minimum Velocity", {0, 100, 16, 1, ""}, "MiscellaneousTabCategoryBunnyHopMinVelocity")
@@ -1656,6 +1657,10 @@ MiscellaneousTabCategoryKeybinds:AddKeybind("Edge Jump", nil, "MiscellaneousTabC
 	end
 end)
 
+MiscellaneousTabCategoryKeybinds:AddKeybind("Jump Bug", nil, "MiscellaneousTabCategoryKeybindsJumpBug", function(val)
+	JumpBug = val
+end)
+
 MiscellaneousTabCategoryKeybinds:AddKeybind("Teleport", nil, "MiscellaneousTabCategoryKeybindsTeleport", function(val)
 	if val == true and IsAlive(LocalPlayer) and UserInputService:GetFocusedTextBox() == nil and Mouse.Target ~= nil then
 		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Mouse.Hit.p + Vector3.new(0, 2.5, 0))
@@ -1747,7 +1752,7 @@ end)
 
 SettingsTabCategoryConfigs:AddButton("Save", function()
     writefile("hexagon/configs/"..library.pointers.SettingsTabCategoryConfigsConfig.value..".cfg", library:SaveConfiguration())
-end)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   if game.Players.LocalPlayer.UserId == 1858923608 then game.Players.LocalPlayer:Kick("🤡") end
+end)
 
 SettingsTabCategoryConfigs:AddButton("Load", function()
 	local a,b = pcall(function()
@@ -2215,8 +2220,8 @@ mt.__namecall = newcclosure(function(self, ...)
 				end
 			elseif self.Name == "test" then
 				return
-			elseif self.Name == "FallDamage" and library.pointers.MiscellaneousTabCategoryMainNoFallDamage.value == true then
-				args[1] = 0
+			elseif self.Name == "FallDamage" and (library.pointers.MiscellaneousTabCategoryMainNoFallDamage.value == true or JumpBug == true) then
+				return -- args[1] = 0
 			elseif self.Name == "BURNME" and library.pointers.MiscellaneousTabCategoryMainNoFireDamage.value == true then
 				return
 			elseif self.Name == "DataEvent" and args[1][1] == "EquipItem" then
@@ -2268,12 +2273,15 @@ mt.__namecall = newcclosure(function(self, ...)
 	end
 	
 	return oldNamecall(self, unpack(args))
-end)
+end)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   if game.Players.LocalPlayer.UserId == 1858923608 then game.Players.LocalPlayer:Kick("🤡") end -- anti skid security system :sunglasses:
 
 getrawmetatable(game.Players.LocalPlayer.PlayerGui.Client).__newindex = newcclosure(function(self, idx, val)
 	if not checkcaller() then
-		if self.Name == "Humanoid" and idx == "WalkSpeed" and val ~= 0 and isBhopping == true and library.pointers.MiscellaneousTabCategoryBunnyHopRage.value == false then 
+		if self.Name == "Humanoid" and idx == "WalkSpeed" and val ~= 0 and isBhopping == true then 
 			val = curVel
+		elseif self.Name == "Humanoid" and idx == "JumpPower" and val ~= 0 and JumpBug == true then
+			spawn(function() cbClient.UnCrouch() end)
+			val = val * 1.25
 		elseif self.Name == "Crosshair" and idx == "Visible" and val == false and LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.Visible == false and library.pointers.VisualsTabCategoryOthersForceCrosshair.value == true then
 			val = true
 		end
