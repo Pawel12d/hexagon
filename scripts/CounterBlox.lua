@@ -127,8 +127,8 @@ local nocw_m = {}
 local curVel = 16
 local isBhopping = false
 
-local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/ESP.lua"))()
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/UILibrary.lua"))()
+local ESP = loadstring(readfile("HexagonTesting/ESP.lua"))() -- loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/ESP.lua"))()
+local library = loadstring(readfile("HexagonTesting/UILibrary.lua"))() -- loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/UILibrary.lua"))()
 
 local Window = library:CreateWindow(Vector2.new(500, 500), Vector2.new((workspace.CurrentCamera.ViewportSize.X/2)-250, (workspace.CurrentCamera.ViewportSize.Y/2)-250))
 
@@ -379,21 +379,7 @@ local function AddCustomSkin(tbl)
 			newvalue3.Value = tbl.skinrarity
 			newvalue3.Parent = LocalPlayer.PlayerGui.Client.Rarities
 		end
-		--[[
-			if tbl.animation ~= nil then
-				newvalue4 = game.ReplicatedStorage.Skins.Bayonet["Candy Cane"].Animated:Clone()
-				newvalue4.Name = "Animated"
-				require(newvalue4)[1] = nil
-				require(newvalue4)[2] = nil
-				require(newvalue4)[3] = nil
-				require(newvalue4)[4] = nil
-				require(newvalue4)["delays"] = tbl.animation[1]
-				for i,v in pairs(tbl.animation[2]) do
-					require(newvalue4)[i] = v
-				end
-				newvalue4.Parent = newfolder
-			end
-		--]]
+
 		if isGlove == true then
 			newtextures = Instance.new("SpecialMesh")
 			newtextures.Name = "Textures"
@@ -443,93 +429,6 @@ local function AddCustomModel(tbl)
 		table.insert(nocw_m, {tostring(tbl.modelname)})
 	end
 end
-
-function SimulateShot(plr, pos)
-	local ignoreList = {
-		workspace.CurrentCamera,
-		workspace.Debris,
-		workspace.Ray_Ignore,
-		workspace.Map:WaitForChild("Clips"),
-		workspace.Map:WaitForChild("SpawnPoints"),
-		LocalPlayer.Character
-	}
-	
-	local gun = cbClient.gun
-	
-	if gun ~= "none" then
-		if gun:FindFirstChild("Penetration") then
-			gunPenetration = gun.Penetration.Value * 0.01
-		end
-		
-		if gun:FindFirstChild("Range") then
-			gunRange = gun.Range.Value
-		end
-		
-		local direction = CFrame.new(workspace.CurrentCamera.CFrame.Position, pos).lookVector.unit * math.clamp(gunRange, 1, 300)
-		local ray = Ray.new(workspace.CurrentCamera.CFrame.Position, direction)
-		local hitPart, hitPos = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList, false, true)
-		local partHit, posHit, normHit
-		
-		local partsPenetrated = 0
-		local limit = 0
-		local materialModifier = 1
-		local damageModifier = 1
-		
-		repeat
-			partHit, posHit, normHit = workspace:FindPartOnRayWithIgnoreList(ray, ignoreList, false, true)
-			
-			if partHit and partHit.Parent then
-				materialModifier = 1
-
-				if partHit.Material == Enum.Material.DiamondPlate then
-					materialModifier = 3
-				end
-				
-				if partHit.Material == Enum.Material.CorrodedMetal or partHit.Material == Enum.Material.Metal or partHit.Material == Enum.Material.Concrete or partHit.Material == Enum.Material.Brick then
-					materialModifier = 2
-				end
-				
-				if partHit.Name == "Grate" or partHit.Material == Enum.Material.Wood or partHit.Material == Enum.Material.WoodPlanks or partHit and partHit.Parent and partHit.Parent:FindFirstChild("Humanoid") then
-					materialModifier = 0.1
-				end
-				
-				if partHit.Transparency == 1 or partHit.CanCollide == false or partHit.Name == "Glass" or partHit.Name == "Cardboard" or not (not partHit:IsDescendantOf(workspace.Ray_Ignore)) or not (not partHit:IsDescendantOf(workspace.Debris)) or partHit and partHit.Parent and partHit.Parent.Name == "Hitboxes" then
-					materialModifier = 0
-				end
-
-				if partHit.Name == "nowallbang" then
-					materialModifier = 100
-				end
-				
-				if partHit:FindFirstChild("materialModifier") then
-					materialModifier = partHit.materialModifier.Value
-				end
-				
-				local fakeHit, fakePos = workspace:FindPartOnRayWithWhitelist(Ray.new(posHit + direction * 1, direction * -2), {partHit}, true)
-				
-				limit = math.min(gunPenetration, limit + ((fakePos - posHit).magnitude * materialModifier))
-				wallbang = partsPenetrated >= 1 and true or false
-				
-				if partHit and partHit:IsDescendantOf(plr.Character) and not partHit.Parent:IsA("Accessory") and (partHit.Transparency < 1 or partHit.Name == "HeadHB") then
-					return partHit, posHit, damageModifier, wallbang
-				end
-				
-				damageModifier = 1 - limit / gunPenetration
-				
-				if materialModifier > 0 then
-					partsPenetrated = partsPenetrated + 1
-				end
-				
-				if partHit and partHit.Parent and partHit.Parent.Name == "Hitboxes" or partHit and partHit.Parent and partHit.Parent.Parent and partHit.Parent.Parent:FindFirstChild("Humanoid2") or partHit and partHit.Parent and partHit.Parent:FindFirstChild("Humanoid2") or partHit and partHit.Parent and partHit.Parent:FindFirstChild("Humanoid") and (1 > partHit.Transparency or partHit.Name == "HeadHB") and partHit.Parent:IsA("Model") then
-					table.insert(ignoreList, partHit.Parent)
-				else
-					table.insert(ignoreList, partHit)
-				end
-			end
-		until partHit == nil or partHit:IsDescendantOf(plr.Character) or limit >= gunPenetration or 0 >= damageModifier or partsPenetrated >= 4
-	end
-end
-
 
 -- GUI
 local AimbotTab = Window:CreateTab("Aimbot")
@@ -599,46 +498,7 @@ AimbotTabCategoryLegitbot:AddSlider("Distance", {0, 2048, 0, 1, " studs"}, "Aimb
 AimbotTabCategoryLegitbot:AddSlider("Smoothness", {1, 30, 1, 1, ""}, "AimbotTabCategoryLegitbotSmoothness")
 
 AimbotTabCategoryLegitbot:AddSlider("Hitchance", {0, 100, 100, 1, "%"}, "AimbotTabCategoryLegitbotHitchance")
---[[
-local AimbotTabCategoryRagebot = AimbotTab:AddCategory("Ragebot", 2)
 
-AimbotTabCategoryRagebot:AddToggle("Enabled", false, "AimbotTabCategoryAimbotTabCategoryRagebotEnabled", function(val)
-	if val == true then
-		RagebotLoop = game:GetService("RunService").RenderStepped:Connect(function()
-			if IsAlive(LocalPlayer) then
-				for i,v in pairs(game.Players:GetPlayers()) do
-					if IsAlive(v) and GetTeam(v) ~= GetTeam(LocalPlayer) then
-						local hitPart, hitPos, hitDamage, isWallbang = SimulateShot(v, v.Character.Head.Position) -- UpperTorso
-						
-						if hitPart and (hitDamage * cbClient.gun.DMG.Value) > 20 then
-							if SilentRagebot.cooldown == false then
-								SilentRagebot.cooldown = true
-								SilentRagebot.target = hitPart
-								wait()
-								cbClient.firebullet()
-								if cbClient.gun then
-									wait(cbClient.gun.FireRate.Value)
-									SilentRagebot.cooldown = false
-								end
-							end
-						end
-					end
-				end
-			end
-		end)
-	elseif val == false and RagebotLoop then
-		RagebotLoop:Disconnect()
-	end
-end)
-
-AimbotTabCategoryRagebot:AddToggle("Silent", false, "AimbotTabCategoryAimbotTabCategoryRagebotSilent")
-
-AimbotTabCategoryRagebot:AddToggle("Team Check", false, "AimbotTabCategoryAimbotTabCategoryRagebotTeamCheck")
-
-AimbotTabCategoryRagebot:AddToggle("Autowall", false, "AimbotTabCategoryAimbotTabCategoryRagebotAutowall")
-
-AimbotTabCategoryRagebot:AddSlider("Minimum Damage", {0, 100, 100, 1, " hp"}, "AimbotTabCategoryRagebotMinimumDamage")
---]]
 local AimbotTabCategoryAntiAimbot = AimbotTab:AddCategory("Anti Aimbot", 2)
 
 AimbotTabCategoryAntiAimbot:AddToggle("Enabled", false, "AimbotTabCategoryAntiAimbotEnabled", function(val)
@@ -1234,14 +1094,7 @@ MiscellaneousTabCategoryMain:AddButton("Inject Custom Skins", function()
 		end
 	end
 end)
---[[
-BAN
-MiscellaneousTabCategoryMain:AddButton("Equip All Skins", function()
-	for i,v in pairs(cbClient.CurrentInventory) do
-		cbClient.equipitem(i, "Both")
-	end
-end)
---]]
+
 MiscellaneousTabCategoryMain:AddButton("Crash Server", function()
 	if LocalPlayer.Character then
 		game:GetService("RunService").RenderStepped:Connect(function()
@@ -2111,23 +1964,6 @@ Mouse.Move:Connect(function()
 end)
 
 Hint.Text = "Hexagon | Setting up hooks..."
-
---[[
-local Hooks = loadstring(readfile("HexagonTesting/Hooks.lua"))
-local HooksENV = getfenv(Hooks)
-
-HooksENV.SilentRagebot = SilentRagebot
-HooksENV.SilentLegitbot = SilentLegitbot
-HooksENV.isBhopping = isBhopping
-HooksENV.JumpBug = JumpBug
-HooksENV.curVel = curVel
-HooksENV.library = library
-HooksENV.cbClient = cbClient
-HooksENV.LocalPlayer = LocalPlayer
-HooksENV.IsAlive = IsAlive
-
-Hooks()
---]]
 
 hookfunc(getrenv().xpcall, function() end)
 
