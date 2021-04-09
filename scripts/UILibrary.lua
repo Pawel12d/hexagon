@@ -158,7 +158,7 @@ local library = {
         guiname = "Hexagon",
 		title = "Hexagon",
 		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=6597976562",
-        footer = " Version 2.4 | This update broke FOV in your cfgs :sunglasses:",
+        footer = " Version RADZIU GAY | Enjoy ur 2 fps",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,
