@@ -1021,21 +1021,27 @@ end)
 
 MiscellaneousTabCategoryMain:AddSlider("Open Case Amount", {1, 100, 1, 1, ""}, "MiscellaneousTabCategoryMainOpenCaseAmount")
 
-MiscellaneousTabCategoryMain:AddMultiDropdown("Custom Models", TableToNames(loadstring("return "..readfile("hexagon/custom_models.txt"))(), true), {}, "MiscellaneousTabCategoryMainCustomModels", function(val)
-	if not ViewmodelsBackup then
-		ViewmodelsBackup = game.ReplicatedStorage.Viewmodels:Clone()
-	end
-	
-	game.ReplicatedStorage.Viewmodels:Destroy()
-	
-	ViewmodelsBackup:Clone().Parent = game.ReplicatedStorage
-	
-	for i,v in pairs(loadstring("return "..readfile("hexagon/custom_models.txt"))()) do
-		if table.find(val, v.weaponname) then
-			AddCustomModel(v)
+local a,b = pcall(function()
+	MiscellaneousTabCategoryMain:AddMultiDropdown("Custom Models", TableToNames(loadstring("return "..readfile("hexagon/custom_models.txt"))(), true), {}, "MiscellaneousTabCategoryMainCustomModels", function(val)
+		if not ViewmodelsBackup then
+			ViewmodelsBackup = game.ReplicatedStorage.Viewmodels:Clone()
 		end
-	end
+		
+		game.ReplicatedStorage.Viewmodels:Destroy()
+		
+		ViewmodelsBackup:Clone().Parent = game.ReplicatedStorage
+		
+		for i,v in pairs(loadstring("return "..readfile("hexagon/custom_models.txt"))()) do
+			if table.find(val, v.weaponname) then
+				AddCustomModel(v)
+			end
+		end
+	end)
 end)
+
+if not a then
+	game.Players.LocalPlayer:Kick("Hexagon | Your custom models file is fucked up lol!")
+end
 
 MiscellaneousTabCategoryMain:AddDropdown("Inventory Changer", TableToNames(Inventories), "-", "MiscellaneousTabCategoryMainInventoryChanger", function(val)
 	local InventoryLoadout = LocalPlayer.PlayerGui.GUI["Inventory&Loadout"]
