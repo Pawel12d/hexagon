@@ -15,6 +15,7 @@ local Pins = {
 	"rbxassetid://734835644",  -- CBCL S1
 	"rbxassetid://734723378",  -- CBCL S2
 	"rbxassetid://4434228836", -- Battle Pass
+	"rbxassetid://331180718", -- Rolve Admin
 }
 
 --[[
