@@ -16,18 +16,18 @@ local RunService = game:GetService("RunService")
 
 -- Environment 
 local getrawmetatable = getrawmetatable or false
-local http_request = http_request or request or (http and http.request) or (syn and syn.request) or false
 local mousemove = mousemove or mousemoverel or mouse_move or false
 local getsenv = getsenv or false
 local listfiles = listfiles or listdir or syn_io_listdir or false
 local isfolder = isfolder or false
+local hookfunc = hookfunc or hookfunction or replaceclosure or false
 
 if (getrawmetatable == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: getrawmetatable.") end
-if (http_request == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: request.") end
 if (mousemove == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: mousemove.") end
 if (getsenv == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: getsenv.") end
 if (listfiles == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: listfiles.") end
 if (isfolder == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: isfolder.") end
+if (hookfunc == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: hookfunc.") end
 
 Hint.Text = "Hexagon | Setting up configuration settings..."
 

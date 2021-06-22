@@ -397,6 +397,7 @@ function library:CreateWindow(csize, cpos)
 		AnchorPoint = Vector2.new(0.5,0.5),
         Image = "rbxassetid://165689900",
 		Name = "Pointer",
+		Visible = false,
 		Parent = self.base
 	})
 	
