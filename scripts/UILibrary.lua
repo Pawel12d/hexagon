@@ -156,9 +156,9 @@ local library = {
     pointers = {},
     settings = {
         guiname = "Hexagon",
-		title = "Hexagon",
+		title = "Hexagon [discontinued]",
 		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=6597976562",
-        footer = " wassup",
+        footer = " Discontinued, use at your own risk!",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,
