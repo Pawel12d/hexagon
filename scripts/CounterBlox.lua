@@ -2198,6 +2198,7 @@ if readfile("hexagon/autoload.txt") ~= "" and isfile("hexagon/configs/"..readfil
 end
 
 print("Hexagon finished loading!")
+print("101 120 111 100 117 115") -- :)
 
 Hint.Text = "Hexagon | Loading finished!"
 wait(1.5)
