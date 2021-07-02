@@ -156,9 +156,9 @@ local library = {
     pointers = {},
     settings = {
         guiname = "Hexagon",
-		title = "Hexagon [discontinued]",
+		title = "Hexagon [discontinued???]",
 		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=6597976562",
-        footer = " Discontinued, use at your own risk!",
+        footer = " Imagine pressing Copy Discord Invite.",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,

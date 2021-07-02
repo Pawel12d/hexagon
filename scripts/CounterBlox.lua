@@ -1524,7 +1524,7 @@ SettingsTabCategoryMain:AddButton("Server Rejoin", function()
 end)
 
 SettingsTabCategoryMain:AddButton("Copy Discord Invite", function()
-	setclipboard("https://discord.gg/47YH2Ay")
+	setclipboard("https://discord.gg/FdrQZ6sD5T")
 end)
 
 SettingsTabCategoryMain:AddButton("Copy Roblox Game Invite", function()
