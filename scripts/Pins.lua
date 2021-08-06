@@ -26,14 +26,6 @@ for i,v in pairs(game.Players:GetPlayers()) do
 		print(v.EquippedPin.Value)
 	end
 end
-
-**My Pins Script** (Last Updated: 06.08.2021)
-```lua
-shared.Saving = true
-shared.Pins = nil
-
-loadstring(game:HttpGet(("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/Pins.lua")))()
-```
 --]]
 
 -- do not edit below --
