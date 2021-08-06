@@ -1,6 +1,5 @@
-local Saving = true
-
-local Pins = {
+shared.Saving = shared.Saving or true
+shared.Pins = shared.Pins or {
 	"rbxassetid://6616945516", -- Easter 2021
 	"rbxassetid://6111454171", -- Christmas 2020
 	"rbxassetid://5894230059", -- Halloween 2020
@@ -15,15 +14,16 @@ local Pins = {
 	"rbxassetid://734835644",  -- CBCL S1
 	"rbxassetid://734723378",  -- CBCL S2
 	"rbxassetid://4434228836", -- Battle Pass
+	"rbxassetid://6835204580", -- Honk Honk
 	"rbxassetid://331180718", -- Rolve Admin
 }
 
 --[[
+Pin Scanner:
+
 for i,v in pairs(game.Players:GetPlayers()) do
-	if v ~= game.Players.LocalPlayer then
-		if not table.find(Pins, "rbxassetid://"..v.EquippedPin.Value:sub(-10)) and v.EquippedPin.Value ~= "" then
-		    print(v.EquippedPin.Value)
-		end
+	if not table.find(shared().Pins, "rbxassetid://"..v.EquippedPin.Value:sub(-10)) and v.EquippedPin.Value ~= "" then
+		print(v.EquippedPin.Value)
 	end
 end
 --]]
@@ -31,30 +31,30 @@ end
 -- do not edit below --
 
 local mt = getrawmetatable(game)
-local oldNamecall = mt.__namecall
+local oldNamecall = nil
 
 if setreadonly then setreadonly(mt, false) else make_writeable(mt, true) end
 
-mt.__namecall = newcclosure(function(self, ...)
+oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
     local method = getnamecallmethod()
     local args = {...}
 	
 	if not checkcaller() then
 		if method == "FireServer" and self.Name == "EquipPin" then
-			if Saving == true then
+			if shared.Saving == true then
 				writefile("EquippedPin.txt", args[1])
 			end
 			
 			game.Players.LocalPlayer.EquippedPin.Value = args[1]
 		elseif method == "InvokeServer" and self.Name == "RequestPins" then
-			if Saving == true then
+			if shared.Saving == true then
 				if isfile("EquippedPin.txt") then
 					game.Players.LocalPlayer.PlayerGui.Menew.MainFrame.PlayerCard.Photo.EquippedPin.Image = readfile("EquippedPin.txt")
 					game.Players.LocalPlayer.EquippedPin.Value = readfile("EquippedPin.txt")
 				end
 			end
 			
-			return Pins
+			return shared.Pins
 		end
 	end
 	
