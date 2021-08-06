@@ -1,7 +1,5 @@
-print(shared.Saving, shared.Pins)
-
-shared.Saving = shared.Saving ~= nil and shared.Saving or true
-shared.Pins = shared.Pins ~= nil and shared.Pins or {
+shared.Saving = shared.Saving == nil and true or shared.Saving
+shared.Pins = shared.Pins == nil and {
 	"rbxassetid://6616945516", -- Easter 2021
 	"rbxassetid://6111454171", -- Christmas 2020
 	"rbxassetid://5894230059", -- Halloween 2020
@@ -18,9 +16,7 @@ shared.Pins = shared.Pins ~= nil and shared.Pins or {
 	"rbxassetid://4434228836", -- Battle Pass
 	"rbxassetid://6835204580", -- Honk Honk
 	"rbxassetid://331180718", -- Rolve Admin
-}
-
-print(shared.Saving, shared.Pins)
+} or shared.Pins
 
 --[[
 Pins Scanner:
@@ -30,6 +26,14 @@ for i,v in pairs(game.Players:GetPlayers()) do
 		print(v.EquippedPin.Value)
 	end
 end
+
+**My Pins Script** (Last Updated: 06.08.2021)
+```lua
+shared.Saving = true
+shared.Pins = nil
+
+loadstring(game:HttpGet(("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/Pins.lua")))()
+```
 --]]
 
 -- do not edit below --
