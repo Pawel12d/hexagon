@@ -1,3 +1,5 @@
+print(shared.Saving, shared.Pins)
+
 shared.Saving = shared.Saving ~= nil and shared.Saving or true
 shared.Pins = shared.Pins ~= nil and shared.Pins or {
 	"rbxassetid://6616945516", -- Easter 2021
@@ -18,8 +20,10 @@ shared.Pins = shared.Pins ~= nil and shared.Pins or {
 	"rbxassetid://331180718", -- Rolve Admin
 }
 
+print(shared.Saving, shared.Pins)
+
 --[[
-Pin Scanner:
+Pins Scanner:
 
 for i,v in pairs(game.Players:GetPlayers()) do
 	if not table.find(shared().Pins, "rbxassetid://"..v.EquippedPin.Value:sub(-10)) and v.EquippedPin.Value ~= "" then
