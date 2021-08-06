@@ -1,5 +1,5 @@
-shared.Saving = shared.Saving or true
-shared.Pins = shared.Pins or {
+shared.Saving = shared.Saving ~= nil and shared.Saving or true
+shared.Pins = shared.Pins ~= nil and shared.Pins or {
 	"rbxassetid://6616945516", -- Easter 2021
 	"rbxassetid://6111454171", -- Christmas 2020
 	"rbxassetid://5894230059", -- Halloween 2020
