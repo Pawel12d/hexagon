@@ -1,9 +1,7 @@
 {{
-	weaponname = "Halloween C4",
-	modelname = "C4",
-	model = game.ReplicatedStorage.Viewmodels["v_C4Halloween"]:Clone()
-},{
-	weaponname = "Old M4A1",
+	
+
+  weaponname = "Old M4A1",
 	modelname = "M4A1",
 	model = game.ReplicatedStorage.Viewmodels["v_oldM4A1-S"]:Clone()
 },{
