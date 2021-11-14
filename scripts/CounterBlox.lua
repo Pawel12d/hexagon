@@ -54,6 +54,12 @@ end
 if not isfile("hexagon/custom_models.txt") then
 	print("downloading hexagon custom models file")
 	writefile("hexagon/custom_models.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/custom_models.txt"))
+elseif readfile("hexagon/custom_models.txt"):find("Clone") then
+	local str = readfile("hexagon/custom_models.txt")
+	str = str:gsub([[game.ReplicatedStorage.Viewmodels["v_C4Halloween"]:Clone()]], [[game.ReplicatedStorage.Viewmodels:FindFirstChild("v_C4Halloween")]])
+	str = str:gsub([[game.ReplicatedStorage.Viewmodels["v_oldM4A1-S"]:Clone()]], [[game.ReplicatedStorage.Viewmodels:FindFirstChild("v_oldM4A1-S")]])
+	writefile("hexagon/custom_models.txt", str)
+	print("exodus winning $$$")
 end
 
 if not isfile("hexagon/inventories.txt") then
@@ -414,6 +420,7 @@ local function AddCustomSkin(tbl)
 				newvalue.Parent = newfolder
 			end
 		end
+		
 		table.insert(nocw_s, {tostring(tbl.weaponname.."_"..tbl.skinname)})
 			
 		print("Custom skin: "..tostring(tbl.weaponname.."_"..tbl.skinname).." successfully injected!")
@@ -426,7 +433,7 @@ local function AddCustomModel(tbl)
 			game.ReplicatedStorage.Viewmodels["v_"..tbl.modelname]:Destroy()
 		end
 		
-		newmodel = tbl.model
+		newmodel = tbl.model:Clone()
 		newmodel.Name = "v_"..tbl.modelname
 		newmodel.Parent = game.ReplicatedStorage.Viewmodels
 		
