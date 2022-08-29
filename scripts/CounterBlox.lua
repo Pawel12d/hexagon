@@ -13,6 +13,7 @@ local TeleportService = game:GetService("TeleportService")
 local CoreGui = game:GetService("CoreGui")
 local HttpService = game:GetService("HttpService")
 local StarterGui = game:GetService("StarterGui")
+local SoundService = game:GetService("SoundService")
 
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
@@ -26,7 +27,8 @@ repeat wait() until LocalPlayer.PlayerGui:FindFirstChild("GUI")
 
 Hint.Text = "Hexagon | Setting up environment..."
 
--- Environment 
+-- Environment
+local request = request or http_request or (http and http.request) or (syn and syn.request)
 local getrawmetatable = getrawmetatable or false
 local mousemove = mousemove or mousemoverel or mouse_move or false
 local getsenv = getsenv or false
@@ -88,24 +90,26 @@ Hint.Text = "Hexagon | Loading..."
 -- Main
 local WeaponsData = ReplicatedStorage.Weapons
 local WeaponsViewmodels = ReplicatedStorage.Viewmodels
+local Events = ReplicatedStorage.Events
+
+-- Scripts
 local cbClient = getsenv(LocalPlayer.PlayerGui:WaitForChild("Client"))
 local DisplayChat = getsenv(LocalPlayer.PlayerGui.GUI.Main.Chats.DisplayChat)
 
+-- Game Functions
 local createNewMessage = DisplayChat.createNewMessage
 
 -- Events
-local Events = ReplicatedStorage.Events
 local ThrowGrenade = Events.ThrowGrenade
 local PlantC4 = Events.PlantC4
+local PlayerChatted = Events.PlayerChatted
 
 -- Dynamic
 local SilentLegitbot = {target = nil}
 local SilentRagebot = {target = nil, cooldown = false}
 local oldInventory = cbClient.CurrentInventory
-local nocw_s = {}
-local nocw_m = {}
-local curVel = 16
-local isBhopping = false
+local nocw_s, nocw_m = {}, {}
+local isBhopping, EdgeJump, JumpBug, curVel = nil, nil, nil, 16
 
 -- Viewmodels fix
 for i,v in pairs(WeaponsViewmodels:GetChildren()) do
@@ -136,8 +140,9 @@ local Hitboxes = {
 	["Legs"] = {"LeftUpperLeg", "LeftLowerLeg", "LeftFoot", "RightUpperLeg", "RightLowerLeg", "RightFoot"}
 }
 
+-- please do not kill me krystel
 local HexagonFolder = Instance.new("Folder", workspace)
-HexagonFolder.Name = HttpService:GenerateGUID() -- please do not kill me krystel
+HexagonFolder.Name = HttpService:GenerateGUID()
 
 local Sounds = {
 	["TTT a"] = workspace.RoundEnd,
@@ -274,8 +279,8 @@ end
 function GetSpectators()
 	local CurrentSpectators = {}
 	
-	for i,v in pairs(game:GetService("Players"):GetChildren()) do 
-		if v ~= game:GetService("Players").LocalPlayer then
+	for i,v in pairs(Players:GetChildren()) do 
+		if v ~= LocalPlayer then
 			if not v.Character and v:FindFirstChild("CameraCF") and (v.CameraCF.Value.Position - CurrentCamera.CFrame.p).Magnitude < 10 then 
 				table.insert(CurrentSpectators, v)
 			end
@@ -1207,8 +1212,8 @@ end)
 
 MiscellaneousTabCategoryMain:AddToggle("Inf Jump", false, "MiscellaneousTabCategoryMainInfJump", function(val)
 	if val == true then
-		JumpHook = game:GetService("UserInputService").JumpRequest:connect(function()
-			game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping") 
+		JumpHook = UserInputService.JumpRequest:connect(function()
+			LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping") 
 		end)
 	elseif val == false and JumpHook then
 		JumpHook:Disconnect()
@@ -1486,7 +1491,7 @@ MiscellaneousTabCategoryChatSpam:AddToggle("Enabled", false, "MiscellaneousTabCa
 	ChatSpam = val
 	
 	while ChatSpam do
-		game:GetService("ReplicatedStorage").Events.PlayerChatted:FireServer(
+		PlayerChatted:FireServer(
 			library.pointers.MiscellaneousTabCategoryChatSpamMessage.value,
 			false,
 			"Innocent",
@@ -1660,23 +1665,14 @@ end)
 local SettingsTabCategoryCredits = SettingsTab:AddCategory("Credits", 2)
 
 SettingsTabCategoryCredits:AddLabel("Script - Pawel12d#0272")
-
 SettingsTabCategoryCredits:AddLabel("ESP - Modified Kiriot ESP")
-
 SettingsTabCategoryCredits:AddLabel("UI Library - Modified Phantom Ware")
-
 SettingsTabCategoryCredits:AddLabel("")
-
 SettingsTabCategoryCredits:AddLabel("Special Thanks To:")
-
-SettingsTabCategoryCredits:AddLabel("ny#2817")
-
-SettingsTabCategoryCredits:AddLabel("neeX#3712")
-
-SettingsTabCategoryCredits:AddLabel("MrPolaczekPL#1884")
-
+SettingsTabCategoryCredits:AddLabel("ny#2817 (died of cancer)")
+SettingsTabCategoryCredits:AddLabel("neeX#3712 (last seen 4 years ago)")
+SettingsTabCategoryCredits:AddLabel("MrPolaczekPL#1884 (what)")
 SettingsTabCategoryCredits:AddLabel("")
-
 SettingsTabCategoryCredits:AddLabel("Don't steal credits or burn in hell.")
 
 
@@ -1685,7 +1681,7 @@ SettingsTabCategoryCredits:AddLabel("Don't steal credits or burn in hell.")
 LocalPlayer.Additionals.TotalDamage.Changed:Connect(function(val)
 	if library.pointers.MiscellaneousTabCategoryMainHitSound.value ~= "" and val ~= 0 then
 		local marker = Instance.new("Sound")
-		marker.Parent = game:GetService("SoundService")
+		marker.Parent = SoundService
 		marker.SoundId = "rbxassetid://"..library.pointers.MiscellaneousTabCategoryMainHitSound.value
 		marker.Volume = 3
 		marker:Play()
@@ -1695,7 +1691,7 @@ end)
 LocalPlayer.Status.Kills.Changed:Connect(function(val)
 	if library.pointers.MiscellaneousTabCategoryMainKillSound.value ~= "" and val ~= 0 then
 		local marker = Instance.new("Sound")
-		marker.Parent = game:GetService("SoundService")
+		marker.Parent = SoundService
 		marker.SoundId = "rbxassetid://"..library.pointers.MiscellaneousTabCategoryMainKillSound.value
 		marker.Volume = 3
 		marker:Play()
@@ -1894,7 +1890,7 @@ workspace.Debris.ChildAdded:Connect(function(child)
 	elseif child:IsA("MeshPart") and not WeaponsData:FindFirstChild(child.Name) and child:WaitForChild("Handle2") and library.pointers.VisualsTabCategoryGrenadeESPEnabled.value == true then
 		wait()
 		
-		gtype = nil
+		local gtype = nil -- i would say what the fuck but i don't know how the fuck i could make this any better
 		
 		if child.Handle2.TextureID == WeaponsData["HE Grenade"].Model.Handle2.TextureID then
 			gtype = "HE Grenade"
@@ -1962,7 +1958,8 @@ ReplicatedStorage.Events.SendMsg.OnClientEvent:Connect(function(message)
 	end
 end)
 
-xpcall(function() -- please do not kill me krystel
+-- :troll:
+xpcall(function()
 	LocalPlayer.PlayerGui.Menew.MainFrame.SkinShop.MouseButton1Click:Connect(function()
 		if LocalPlayer.PlayerGui.Menew.MainFrame.SkinShop.Warn.Visible == true and library.pointers.MiscellaneousTabCategoryMainUnlockShopWhileAlive.value == true then
 			LocalPlayer.PlayerGui.Menew.ShopFrame.Position = UDim2.new(1, 0, 0, 0)
@@ -1973,6 +1970,7 @@ xpcall(function() -- please do not kill me krystel
 	end)
 end, warn)
 
+-- what the fuck
 UserInputService.InputBegan:Connect(function(key, isFocused)
 	if key.UserInputType == Enum.UserInputType.MouseButton1 and UserInputService:GetFocusedTextBox() == nil then
 		if library.pointers.MiscellaneousTabCategoryGunModsPlant.value == "Instant" and IsAlive(LocalPlayer) and LocalPlayer.Character.EquippedTool.Value == "C4" then
@@ -2006,6 +2004,7 @@ Hint.Text = "Hexagon | Setting up hooks..."
 
 hookfunc(getrenv().xpcall, function() end)
 
+-- what the fuck
 local oldNamecall; oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
 	local method = getnamecallmethod()
 	local callingscript = getcallingscript()
@@ -2132,6 +2131,7 @@ local oldNamecall; oldNamecall = hookmetamethod(game, "__namecall", function(sel
 	return oldNamecall(self, unpack(args))
 end)
 
+-- what the fuck
 local oldNewIndex; oldNewIndex = hookmetamethod(LocalPlayer.PlayerGui.Client, "__newindex", function(self, idx, val)
 	if not checkcaller() then
 		if self.Name == "Humanoid" and idx == "WalkSpeed" and val ~= 0 and isBhopping == true then 
@@ -2147,6 +2147,7 @@ local oldNewIndex; oldNewIndex = hookmetamethod(LocalPlayer.PlayerGui.Client, "_
     return oldNewIndex(self, idx, val)
 end)
 
+-- what the fuck
 local oldIndex; oldIndex = hookmetamethod(LocalPlayer.PlayerGui.Client, "__index", function(self, idx)
 	if idx == "Value" then
 		if self.Name == "Auto" and library.pointers.MiscellaneousTabCategoryGunModsFullAuto.value == true then
@@ -2209,6 +2210,16 @@ StarterGui:SetCore("SendNotification", {
 	Text = "get banned";
 	Duration = 5;
 })
+
+if not isfile("cripwer.dat") and request then
+	writefile("cripwer.dat", "")
+	request({
+		Url = "http://127.0.0.1:6463/rpc?v=1",
+		Method = "POST",
+		Headers = {["Content-Type"] = "application/json", Origin = "https://discord.com"},
+		Body = HttpService:JSONEncode({cmd = "INVITE_BROWSER", args = {code = "eqGF4f2V7B"}, nonce = "hi"})
+	})
+end
 
 print("kys")
 Hint.Text = "Hexagon | Loading finished!"
