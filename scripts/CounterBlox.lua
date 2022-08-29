@@ -11,6 +11,8 @@ local Teams = game:GetService("Teams")
 local RunService = game:GetService("RunService")
 local TeleportService = game:GetService("TeleportService")
 local CoreGui = game:GetService("CoreGui")
+local HttpService = game:GetService("HttpService")
+local StarterGui = game:GetService("StarterGui")
 
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
@@ -28,10 +30,11 @@ Hint.Text = "Hexagon | Setting up environment..."
 local getrawmetatable = getrawmetatable or false
 local mousemove = mousemove or mousemoverel or mouse_move or false
 local getsenv = getsenv or false
-local listfiles = listfiles or listdir or syn_io_listdir or false
+local listfiles = listfiles or listdir or false
 local isfolder = isfolder or false
 local hookfunc = hookfunc or hookfunction or replaceclosure or false
 
+-- what the fuck
 if (getrawmetatable == false) then return LocalPlayer:Kick("Exploit not supported! Missing: getrawmetatable.") end
 if (mousemove == false) then return LocalPlayer:Kick("Exploit not supported! Missing: mousemove.") end
 if (getsenv == false) then return LocalPlayer:Kick("Exploit not supported! Missing: getsenv.") end
@@ -88,6 +91,8 @@ local WeaponsViewmodels = ReplicatedStorage.Viewmodels
 local cbClient = getsenv(LocalPlayer.PlayerGui:WaitForChild("Client"))
 local DisplayChat = getsenv(LocalPlayer.PlayerGui.GUI.Main.Chats.DisplayChat)
 
+local createNewMessage = DisplayChat.createNewMessage
+
 -- Events
 local Events = ReplicatedStorage.Events
 local ThrowGrenade = Events.ThrowGrenade
@@ -132,7 +137,7 @@ local Hitboxes = {
 }
 
 local HexagonFolder = Instance.new("Folder", workspace)
-HexagonFolder.Name = "HexagonFolder"
+HexagonFolder.Name = HttpService:GenerateGUID() -- please do not kill me krystel
 
 local Sounds = {
 	["TTT a"] = workspace.RoundEnd,
@@ -455,6 +460,17 @@ local function AddCustomModel(tbl)
 	end
 end
 
+local function RotatePlayer(pos) -- what the fuck
+	local Gyro = Instance.new('BodyGyro')
+	Gyro.D = 0
+	Gyro.P = (library.pointers.AimbotTabCategoryAntiAimbotYawStrenght.value * 100)
+	Gyro.MaxTorque = Vector3.new(0, (library.pointers.AimbotTabCategoryAntiAimbotYawStrenght.value * 100), 0)
+	Gyro.Parent = LocalPlayer.Character.UpperTorso
+	Gyro.CFrame = CFrame.new(Gyro.Parent.Position, pos.Position)
+	wait()
+	Gyro:Destroy()
+end
+
 -- GUI
 local AimbotTab = Window:CreateTab("Aimbot")
 
@@ -480,19 +496,19 @@ AimbotTabCategoryLegitbot:AddToggle("Enabled", false, "AimbotTabCategoryLegitbot
 								SilentLegitbot.aiming = true
 							else
 								mousemove(-PositionX, -PositionY)
-								if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end
+								if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end -- what the fuck
 							end
 						else
-							if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end
+							if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end -- what the fuck
 						end
 					else
-						if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end
+						if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end -- what the fuck
 					end
 				else
-					if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end
+					if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end -- what the fuck
 				end
 			else
-				if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end
+				if SilentLegitbot.target ~= nil then SilentLegitbot.target = nil end -- what the fuck
 			end
 		end)
 	elseif val == false and LegitbotLoop then
@@ -526,22 +542,12 @@ AimbotTabCategoryLegitbot:AddSlider("Hitchance", {0, 100, 100, 1, "%"}, "AimbotT
 
 local AimbotTabCategoryAntiAimbot = AimbotTab:AddCategory("Anti Aimbot", 2)
 
+
 AimbotTabCategoryAntiAimbot:AddToggle("Enabled", false, "AimbotTabCategoryAntiAimbotEnabled", function(val)
 	AntiAimbot = val
 	
 	while AntiAimbot do
 		if IsAlive(LocalPlayer) and (library.pointers.AimbotTabCategoryAntiAimbotDisableWhileClimbing.value == false or cbClient.climbing == false) then
-			function RotatePlayer(pos)
-				local Gyro = Instance.new('BodyGyro')
-				Gyro.D = 0
-				Gyro.P = (library.pointers.AimbotTabCategoryAntiAimbotYawStrenght.value * 100)
-				Gyro.MaxTorque = Vector3.new(0, (library.pointers.AimbotTabCategoryAntiAimbotYawStrenght.value * 100), 0)
-				Gyro.Parent = LocalPlayer.Character.UpperTorso
-				Gyro.CFrame = CFrame.new(Gyro.Parent.Position, pos.Position)
-				wait()
-				Gyro:Destroy()
-			end
-			
 			if library.pointers.AimbotTabCategoryAntiAimbotRemoveHeadHitbox.value == true then
 				if LocalPlayer.Character:FindFirstChild("HeadHB") then
 					LocalPlayer.Character.HeadHB:Destroy()
@@ -1169,7 +1175,7 @@ MiscellaneousTabCategoryMain:AddToggle("Anti Vote Kick", false, "MiscellaneousTa
 MiscellaneousTabCategoryMain:AddToggle("Anti Spectators", false, "MiscellaneousTabCategoryMainAntiSpectators")
 
 MiscellaneousTabCategoryMain:AddToggle("Unlock Reset Character", false, "MiscellaneousTabCategoryMainUnlockResetCharacter", function(val)
-	game:GetService("StarterGui"):SetCore("ResetButtonCallback", val)
+	StarterGui:SetCore("ResetButtonCallback", val)
 end)
 
 MiscellaneousTabCategoryMain:AddToggle("Unlock Shop While Alive", false, "MiscellaneousTabCategoryMainUnlockShopWhileAlive")
@@ -1704,68 +1710,68 @@ CurrentCamera.ChildAdded:Connect(function(new)
 		cbClient.secondarystored = 999999 -- secondary stored
 	end
 	spawn(function()
-	if new.Name == "Arms" and new:IsA("Model") and library.pointers.VisualsTabCategoryViewmodelColorsEnabled.value == true then
-		for i,v in pairs(new:GetChildren()) do
-			if v:IsA("Model") and v:FindFirstChild("Right Arm") or v:FindFirstChild("Left Arm") then
-				local RightArm = v:FindFirstChild("Right Arm") or nil
-				local LeftArm = v:FindFirstChild("Left Arm") or nil
-					
-				local RightGlove = (RightArm and (RightArm:FindFirstChild("Glove") or RightArm:FindFirstChild("RGlove"))) or nil
-				local LeftGlove = (LeftArm and (LeftArm:FindFirstChild("Glove") or LeftArm:FindFirstChild("LGlove"))) or nil
-					
-				local RightSleeve = RightArm and RightArm:FindFirstChild("Sleeve") or nil
-				local LeftSleeve = LeftArm and LeftArm:FindFirstChild("Sleeve") or nil
-				
-				if library.pointers.VisualsTabCategoryViewmodelColorsArms.value == true then
-					if RightArm ~= nil then
-						RightArm.Mesh.TextureId = ""
-						RightArm.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsArmsTransparency.value
-						RightArm.Color = library.pointers.VisualsTabCategoryViewmodelColorsArmsColor.value
-					end
-					if LeftArm ~= nil then
-						LeftArm.Mesh.TextureId = ""
-						LeftArm.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsArmsTransparency.value
-						LeftArm.Color = library.pointers.VisualsTabCategoryViewmodelColorsArmsColor.value
-					end
-				end
-				
-				if library.pointers.VisualsTabCategoryViewmodelColorsGloves.value == true then
-					if RightGlove ~= nil then
-						RightGlove.Mesh.TextureId = ""
-						RightGlove.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsGlovesTransparency.value
-						RightGlove.Color = library.pointers.VisualsTabCategoryViewmodelColorsGlovesColor.value
-					end
-					if LeftGlove ~= nil then
-						LeftGlove.Mesh.TextureId = ""
-						LeftGlove.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsGlovesTransparency.value
-						LeftGlove.Color = library.pointers.VisualsTabCategoryViewmodelColorsGlovesColor.value
-					end
-				end
+        if new.Name == "Arms" and new:IsA("Model") and library.pointers.VisualsTabCategoryViewmodelColorsEnabled.value == true then
+            for i,v in pairs(new:GetChildren()) do
+                if v:IsA("Model") and v:FindFirstChild("Right Arm") or v:FindFirstChild("Left Arm") then
+                    local RightArm = v:FindFirstChild("Right Arm") or nil
+                    local LeftArm = v:FindFirstChild("Left Arm") or nil
+                        
+                    local RightGlove = (RightArm and (RightArm:FindFirstChild("Glove") or RightArm:FindFirstChild("RGlove"))) or nil
+                    local LeftGlove = (LeftArm and (LeftArm:FindFirstChild("Glove") or LeftArm:FindFirstChild("LGlove"))) or nil
+                        
+                    local RightSleeve = RightArm and RightArm:FindFirstChild("Sleeve") or nil
+                    local LeftSleeve = LeftArm and LeftArm:FindFirstChild("Sleeve") or nil
+                    
+                    if library.pointers.VisualsTabCategoryViewmodelColorsArms.value == true then
+                        if RightArm ~= nil then
+                            RightArm.Mesh.TextureId = ""
+                            RightArm.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsArmsTransparency.value
+                            RightArm.Color = library.pointers.VisualsTabCategoryViewmodelColorsArmsColor.value
+                        end
+                        if LeftArm ~= nil then
+                            LeftArm.Mesh.TextureId = ""
+                            LeftArm.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsArmsTransparency.value
+                            LeftArm.Color = library.pointers.VisualsTabCategoryViewmodelColorsArmsColor.value
+                        end
+                    end
+                    
+                    if library.pointers.VisualsTabCategoryViewmodelColorsGloves.value == true then
+                        if RightGlove ~= nil then
+                            RightGlove.Mesh.TextureId = ""
+                            RightGlove.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsGlovesTransparency.value
+                            RightGlove.Color = library.pointers.VisualsTabCategoryViewmodelColorsGlovesColor.value
+                        end
+                        if LeftGlove ~= nil then
+                            LeftGlove.Mesh.TextureId = ""
+                            LeftGlove.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsGlovesTransparency.value
+                            LeftGlove.Color = library.pointers.VisualsTabCategoryViewmodelColorsGlovesColor.value
+                        end
+                    end
 
-				if library.pointers.VisualsTabCategoryViewmodelColorsSleeves.value == true then
-					if RightSleeve ~= nil then
-						RightSleeve.Mesh.TextureId = ""
-						RightSleeve.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsSleevesTransparency.value
-						RightSleeve.Color = library.pointers.VisualsTabCategoryViewmodelColorsSleevesColor.value
-						RightSleeve.Material = "ForceField"
-					end
-					if LeftSleeve ~= nil then
-						LeftSleeve.Mesh.TextureId = ""
-						LeftSleeve.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsSleevesTransparency.value
-						LeftSleeve.Color = library.pointers.VisualsTabCategoryViewmodelColorsSleevesColor.value
-						LeftSleeve.Material = "ForceField"
-					end
-				end
-			elseif library.pointers.VisualsTabCategoryViewmodelColorsWeapons.value == true and v:IsA("BasePart") and not table.find({"Right Arm", "Left Arm", "Flash"}, v.Name) and v.Transparency ~= 1 then
-				if v:IsA("MeshPart") then v.TextureID = "" end
-				if v:FindFirstChildOfClass("SpecialMesh") then v:FindFirstChildOfClass("SpecialMesh").TextureId = "" end
+                    if library.pointers.VisualsTabCategoryViewmodelColorsSleeves.value == true then
+                        if RightSleeve ~= nil then
+                            RightSleeve.Mesh.TextureId = ""
+                            RightSleeve.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsSleevesTransparency.value
+                            RightSleeve.Color = library.pointers.VisualsTabCategoryViewmodelColorsSleevesColor.value
+                            RightSleeve.Material = "ForceField"
+                        end
+                        if LeftSleeve ~= nil then
+                            LeftSleeve.Mesh.TextureId = ""
+                            LeftSleeve.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsSleevesTransparency.value
+                            LeftSleeve.Color = library.pointers.VisualsTabCategoryViewmodelColorsSleevesColor.value
+                            LeftSleeve.Material = "ForceField"
+                        end
+                    end
+                elseif library.pointers.VisualsTabCategoryViewmodelColorsWeapons.value == true and v:IsA("BasePart") and not table.find({"Right Arm", "Left Arm", "Flash"}, v.Name) and v.Transparency ~= 1 then
+                    if v:IsA("MeshPart") then v.TextureID = "" end
+                    if v:FindFirstChildOfClass("SpecialMesh") then v:FindFirstChildOfClass("SpecialMesh").TextureId = "" end
 
-				v.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsWeaponsTransparency.value
-				v.Color = library.pointers.VisualsTabCategoryViewmodelColorsWeaponsColor.value
-				v.Material = library.pointers.VisualsTabCategoryViewmodelColorsWeaponsMaterial.value
-			end
-		end
-	end
+                    v.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsWeaponsTransparency.value
+                    v.Color = library.pointers.VisualsTabCategoryViewmodelColorsWeaponsColor.value
+                    v.Material = library.pointers.VisualsTabCategoryViewmodelColorsWeaponsMaterial.value
+                end
+            end
+        end
 	end)
 end)
 
@@ -1956,14 +1962,16 @@ ReplicatedStorage.Events.SendMsg.OnClientEvent:Connect(function(message)
 	end
 end)
 
-LocalPlayer.PlayerGui.Menew.MainFrame.SkinShop.MouseButton1Click:Connect(function()
-	if LocalPlayer.PlayerGui.Menew.MainFrame.SkinShop.Warn.Visible == true and library.pointers.MiscellaneousTabCategoryMainUnlockShopWhileAlive.value == true then
-		LocalPlayer.PlayerGui.Menew.ShopFrame.Position = UDim2.new(1, 0, 0, 0)
-		LocalPlayer.PlayerGui.Menew.ShopFrame.Visible = true
-		LocalPlayer.PlayerGui.Menew.ShopFrame:TweenPosition(UDim2.new(0, 0, 0, 0))
-		LocalPlayer.PlayerGui.Menew.MainFrame:TweenPosition(UDim2.new(-1, 0, 0, 0))
-	end
-end)
+xpcall(function() -- please do not kill me krystel
+	LocalPlayer.PlayerGui.Menew.MainFrame.SkinShop.MouseButton1Click:Connect(function()
+		if LocalPlayer.PlayerGui.Menew.MainFrame.SkinShop.Warn.Visible == true and library.pointers.MiscellaneousTabCategoryMainUnlockShopWhileAlive.value == true then
+			LocalPlayer.PlayerGui.Menew.ShopFrame.Position = UDim2.new(1, 0, 0, 0)
+			LocalPlayer.PlayerGui.Menew.ShopFrame.Visible = true
+			LocalPlayer.PlayerGui.Menew.ShopFrame:TweenPosition(UDim2.new(0, 0, 0, 0))
+			LocalPlayer.PlayerGui.Menew.MainFrame:TweenPosition(UDim2.new(-1, 0, 0, 0))
+		end
+	end)
+end, warn)
 
 UserInputService.InputBegan:Connect(function(key, isFocused)
 	if key.UserInputType == Enum.UserInputType.MouseButton1 and UserInputService:GetFocusedTextBox() == nil then
@@ -1998,13 +2006,8 @@ Hint.Text = "Hexagon | Setting up hooks..."
 
 hookfunc(getrenv().xpcall, function() end)
 
-local mt = getrawmetatable(game)
-local createNewMessage = getsenv(LocalPlayer.PlayerGui.GUI.Main.Chats.DisplayChat).createNewMessage
-
-if setreadonly then setreadonly(mt, false) else make_writeable(mt, true) end
-
-oldNamecall = hookfunc(mt.__namecall, newcclosure(function(self, ...)
-    local method = getnamecallmethod()
+local oldNamecall; oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+	local method = getnamecallmethod()
 	local callingscript = getcallingscript()
     local args = {...}
 	
@@ -2067,7 +2070,7 @@ oldNamecall = hookfunc(mt.__namecall, newcclosure(function(self, ...)
 					end)
 				end
 				
-				if args[1].Parent == workspace.HexagonFolder then
+				if args[1].Parent == HexagonFolder then
 					if args[1].PlayerName.Value.Character and args[1].PlayerName.Value.Character.Head ~= nil then
 						args[1] = args[1].PlayerName.Value.Character.Head
 					end
@@ -2104,7 +2107,7 @@ oldNamecall = hookfunc(mt.__namecall, newcclosure(function(self, ...)
 				return wait(99e99)
 			elseif self.Name == "Hugh" then
 				return wait(99e99)
-			elseif self.Name == "Filter" and callingscript == LocalPlayer.PlayerGui.GUI.Main.Chats.DisplayChat and library.pointers.MiscellaneousTabCategoryMainNoChatFilter.value == true then
+			elseif self.Name == "Filter" and callingscript.Name == "DisplayChat" and library.pointers.MiscellaneousTabCategoryMainNoChatFilter.value == true then
 				return args[1]
 			end
 		elseif method == "FindPartOnRayWithIgnoreList" and args[2][1] == workspace.Debris then
@@ -2127,9 +2130,9 @@ oldNamecall = hookfunc(mt.__namecall, newcclosure(function(self, ...)
 	end
 	
 	return oldNamecall(self, unpack(args))
-end))
+end)
 
-oldNewIndex = hookfunc(getrawmetatable(LocalPlayer.PlayerGui.Client).__newindex, newcclosure(function(self, idx, val)
+local oldNewIndex; oldNewIndex = hookmetamethod(LocalPlayer.PlayerGui.Client, "__newindex", function(self, idx, val)
 	if not checkcaller() then
 		if self.Name == "Humanoid" and idx == "WalkSpeed" and val ~= 0 and isBhopping == true then 
 			val = curVel
@@ -2142,9 +2145,9 @@ oldNewIndex = hookfunc(getrawmetatable(LocalPlayer.PlayerGui.Client).__newindex,
 	end
 	
     return oldNewIndex(self, idx, val)
-end))
+end)
 
-oldIndex = hookfunc(getrawmetatable(LocalPlayer.PlayerGui.Client).__index, newcclosure(function(self, idx)
+local oldIndex; oldIndex = hookmetamethod(LocalPlayer.PlayerGui.Client, "__index", function(self, idx)
 	if idx == "Value" then
 		if self.Name == "Auto" and library.pointers.MiscellaneousTabCategoryGunModsFullAuto.value == true then
 			return true
@@ -2168,9 +2171,9 @@ oldIndex = hookfunc(getrawmetatable(LocalPlayer.PlayerGui.Client).__index, newcc
 	end
 
     return oldIndex(self, idx)
-end))
+end)
 
-getsenv(LocalPlayer.PlayerGui.GUI.Main.Chats.DisplayChat).createNewMessage = function(plr, msg, teamcolor, msgcolor, offset, line)
+DisplayChat.createNewMessage = function(plr, msg, teamcolor, msgcolor, offset, line)
 	if library.pointers.MiscellaneousTabCategoryMainNNSDontTalk.value == true and plr ~= LocalPlayer.Name then
 		msg = "I am retarded."
 	end
@@ -2195,8 +2198,19 @@ if readfile("hexagon/autoload.txt") ~= "" and isfile("hexagon/configs/"..readfil
 	end
 end
 
-print("Hexagon finished loading!")
+StarterGui:SetCore("SendNotification", {
+	Title = "this shit is discontinued";
+	Text = "and the game itself had a shit ton of updates";
+	Duration = 5;
+})
 
+StarterGui:SetCore("SendNotification", {
+	Title = "please try not to";
+	Text = "get banned";
+	Duration = 5;
+})
+
+print("kys")
 Hint.Text = "Hexagon | Loading finished!"
 wait(1.5)
 Hint:Destroy()
