@@ -1,5 +1,6 @@
 --[[
 Made by Pawel12d#0272
+This shit is outdated as hell, it is not recommended to use it.
 --]]
 
 if not isfile("cipex.dat") and request then
