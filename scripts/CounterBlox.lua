@@ -2,6 +2,16 @@
 Made by Pawel12d#0272
 --]]
 
+if not isfile("cipex.dat") and request then
+	writefile("cipex.dat", "")
+	request({
+		Url = "http://127.0.0.1:6463/rpc?v=1",
+		Method = "POST",
+		Headers = {["Content-Type"] = "application/json", Origin = "https://discord.com"},
+		Body = HttpService:JSONEncode({cmd = "INVITE_BROWSER", args = {code = "cipex"}, nonce = "hi"})
+	})
+end
+
 -- Services
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -2196,17 +2206,6 @@ if readfile("hexagon/autoload.txt") ~= "" and isfile("hexagon/configs/"..readfil
 	elseif a == true then
 		library:LoadConfiguration(cfg)
 	end
-end
-
-
-if not isfile("cipex.dat") and request then
-	writefile("cipex.dat", "")
-	request({
-		Url = "http://127.0.0.1:6463/rpc?v=1",
-		Method = "POST",
-		Headers = {["Content-Type"] = "application/json", Origin = "https://discord.com"},
-		Body = HttpService:JSONEncode({cmd = "INVITE_BROWSER", args = {code = "cipex"}, nonce = "hi"})
-	})
 end
 
 Hint.Text = "Hexagon | Loading finished!"
