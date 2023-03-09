@@ -156,9 +156,9 @@ local library = {
     pointers = {},
     settings = {
         guiname = "Hexagon",
-		title = "Hexagon [Exodus Edition]",
+		title = "Hexagon",
 		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=6597976562",
-        footer = " Exodus Winning $$$",
+        footer = " Want to try our new product? Get it now at discord.gg/cipex!",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,
@@ -1944,22 +1944,7 @@ function library:CreateWindow(csize, cpos)
 
 	return window
 end
---[[
-game:GetService("UserInputService").InputChanged:connect(function(input)
-	pcall(function()
-	local MousePosition = UserInputService:GetMouseLocation()
-	
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-		if library.base.Window.Visible == true and library.pointers.SettingsPointerEnabled.value == true then
-			library.pointer.Visible = true
-			library.pointer.Position = UDim2.new(0, MousePosition.X, 0, MousePosition.Y - 36)
-		else
-			library.pointer.Visible = false
-        end
-	end
-	end)
-end)
---]]
+
 local function GetConfigs()
 	cfgs = {}
 	for i,v in pairs(syn_io_listdir("hexhub")) do

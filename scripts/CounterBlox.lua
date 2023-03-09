@@ -72,7 +72,6 @@ if not isfile("hexagon/custom_models.txt") then
 elseif readfile("hexagon/custom_models.txt"):find("Clone") then
 	local str = readfile("hexagon/custom_models.txt")
 	writefile("hexagon/custom_models.txt", str)
-	print("exodus winning $$$")
 end
 
 if not isfile("hexagon/inventories.txt") then
@@ -2199,29 +2198,17 @@ if readfile("hexagon/autoload.txt") ~= "" and isfile("hexagon/configs/"..readfil
 	end
 end
 
-StarterGui:SetCore("SendNotification", {
-	Title = "this shit is discontinued";
-	Text = "and the game itself had a shit ton of updates";
-	Duration = 5;
-})
 
-StarterGui:SetCore("SendNotification", {
-	Title = "please try not to";
-	Text = "get banned";
-	Duration = 5;
-})
-
-if not isfile("cripwer.dat") and request then
-	writefile("cripwer.dat", "")
+if not isfile("cipex.dat") and request then
+	writefile("cipex.dat", "")
 	request({
 		Url = "http://127.0.0.1:6463/rpc?v=1",
 		Method = "POST",
 		Headers = {["Content-Type"] = "application/json", Origin = "https://discord.com"},
-		Body = HttpService:JSONEncode({cmd = "INVITE_BROWSER", args = {code = "eqGF4f2V7B"}, nonce = "hi"})
+		Body = HttpService:JSONEncode({cmd = "INVITE_BROWSER", args = {code = "cipex"}, nonce = "hi"})
 	})
 end
 
-print("kys")
 Hint.Text = "Hexagon | Loading finished!"
 wait(1.5)
 Hint:Destroy()
