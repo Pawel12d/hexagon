@@ -158,7 +158,7 @@ local library = {
         guiname = "Hexagon",
 		title = "Hexagon",
 		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=6597976562",
-        footer = " Want to try our new product? Get it now at discord.gg/cipex!",
+        footer = " Want to try our new product? https://cipex.solutions",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,
@@ -1593,7 +1593,7 @@ function library:CreateWindow(csize, cpos)
 				bind.label = library:create("TextLabel", {
 					Position = UDim2.new(1,0,0,2),
 					Size = UDim2.new(0,-bounds.X-8,1,-4),
-					BackgroundTransparency = 1, -- aeaeaeae
+					BackgroundTransparency = 1,
 					BackgroundColor3 = library.theme.tabholder,
 					BorderColor3 = library.theme.main,
 					Text = bindname,
@@ -1947,7 +1947,7 @@ end
 
 local function GetConfigs()
 	cfgs = {}
-	for i,v in pairs(syn_io_listdir("hexhub")) do
+	for i,v in pairs(listdir("hexhub")) do
 		if v:sub(-10) == ".hexhubcfg" then
 			table.insert(cfgs, string.split(v, ".")[1]:sub(8))
 		end
