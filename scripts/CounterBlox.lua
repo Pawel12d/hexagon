@@ -1,18 +1,11 @@
+if true then
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/kiciahook/kiciahook/refs/heads/main/loader.luau"))()
+	return
+end
 --[[
 Made by Pawel12d#0272
 This shit is outdated as hell, it is not recommended to use it.
 --]]
-
-if not isfile("cipex.dat") and request then
-	writefile("cipex.dat", "")
-	request({
-		Url = "http://127.0.0.1:6463/rpc?v=1",
-		Method = "POST",
-		Headers = {["Content-Type"] = "application/json", Origin = "https://discord.com"},
-		Body = HttpService:JSONEncode({cmd = "INVITE_BROWSER", args = {code = "cipex"}, nonce = "hi"})
-	})
-end
-
 -- Services
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
